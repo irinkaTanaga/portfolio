@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ира Танага</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --pill: #eaeaea;
+      --pill-hover: #dcdcdc;
+      --tag: #f7f7f7;
+      --card-radius: 16px;
+      --gutter: 20px;
+      /* Content cap. Design is 1440; above it the layout scales up
+         proportionally so a 14" MacBook (1512) keeps ~20px side margins. */
+      --page-max: 1680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    p { margin: 0; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Header (290:8649) ----------
+       space-between: logo frame 129, pills group, links group.
+       At 1440 the pills start at x≈601. */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+
+    .logo,
+    .header__links a {
+      font-size: 15px;
+      line-height: 0.9;
+      padding: 20px 0;
+      white-space: nowrap;
+    }
+
+    .logo { display: block; flex: 0 0 129px; }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 33px;
+      background: var(--pill);
+      font-size: 12px;
+      line-height: 1.1;
+      white-space: nowrap;
+      transition: background-color .15s ease;
+    }
+    .pill:hover { background: var(--pill-hover); }
+
+    .header__links {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .header__links a { display: block; }
+
+    .logo:hover,
+    .header__links a:hover { opacity: .6; }
+
+    /* ---------- Hero (290:3822) ---------- */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 479fr) minmax(0, 813fr);
+      column-gap: clamp(24px, 7.5vw, 108px);
+      align-items: start;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 300px var(--gutter) 34px;
+    }
+
+    .hero__clients {
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    .hero__title {
+      font-size: 44px;
+      max-width: 672px; /* keep the Figma line breaks when the column grows */
+      font-weight: 500;
+      line-height: 0.9;
+    }
+
+    /* ---------- Projects (290:3826) ---------- */
+    .projects {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 20px var(--gutter);
+    }
+
+    .project {
+      display: grid;
+      grid-template-columns: minmax(0, 479fr) minmax(0, 812fr);
+      column-gap: clamp(24px, 7.57vw, 109px);
+      align-items: center;
+    }
+
+    .project__info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-self: stretch;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 33px;
+      background: var(--tag);
+      font-size: 12px;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .project__text {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      line-height: 1.1;
+    }
+
+    .project__title {
+      margin: 0;
+      max-width: 479px; /* keep the Figma line breaks when the column grows */
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+    .project__title a:hover { opacity: .6; }
+
+    .project__desc {
+      max-width: 425px;
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    /* Image card: the visible area equals the Figma mask (W × 487, rounded).
+       Inner layers are positioned in % of that area so they scale with it. */
+    .project__media {
+      --w: 812;
+      position: relative;
+      display: block;
+      width: calc(100% * var(--w) / 812);
+      aspect-ratio: var(--w) / 487;
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      isolation: isolate;
+      background: var(--tag);
+    }
+
+    .project__media img {
+      position: absolute;
+      max-width: none;
+      display: block;
+      object-fit: cover;
+    }
+    .project__media > img,
+    .media__layers { transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
+    .project__media:hover > img,
+    .project__media:hover .media__layers { transform: scale(1.02); }
+
+    /* Multi-layer cards: layers scale together on hover */
+    .media__layers {
+      position: absolute;
+      inset: 0;
+    }
+    .media__layers img { transition: none; }
+
+    /* 290:3858 — 868.113 × 579.025 at (-39, -17.86) */
+    .media--2gis img {
+      left: -4.803%; top: -3.667%;
+      width: 106.910%; height: 118.896%;
+    }
+
+    /* 290:3877 — 1117 × 744 at (-153, -77), mask 811 wide */
+    .media--warehouse { --w: 811; }
+    .media--warehouse img {
+      left: -18.866%; top: -15.811%;
+      width: 137.731%; height: 152.772%;
+    }
+
+    /* 290:3890/3891 — solid #194DF1 layer + 750 × 592 image at (30, 0), mask 810 wide */
+    .media--decode { --w: 810; background: #194df1; }
+    .media--decode img {
+      left: 3.704%; top: 0;
+      width: 92.593%; height: 121.561%;
+    }
+
+    /* 290:3908 — 861 × 526 frame at (-10, -10), image 100.07% × 109.11% inside it */
+    .media--brusnitsyn img {
+      left: -1.263%; top: -2.053%;
+      width: 106.108%; height: 117.849%;
+      object-fit: fill;
+    }
+
+    /* 290:3925 — mask 810 × 487. Cover 939 × 529 at (-129, -137),
+       its vertical mirror at (-129, 390), logo 143 × 34 at (63, 403). */
+    .media--tbiz { --w: 810; background: #ffd83a; }
+    .media--tbiz .layer-cover,
+    .media--tbiz .layer-mirror {
+      left: -15.926%;
+      width: 115.926%; height: 108.624%;
+    }
+    .media--tbiz .layer-cover { top: -28.131%; }
+    .media--tbiz .layer-mirror { top: 80.082%; transform: scaleY(-1); }
+    .media--tbiz .layer-logo {
+      left: 7.778%; top: 82.752%;
+      width: 17.654%; height: 6.982%;
+    }
+
+    /* 290:3943 — mask 811 × 487, solid #E54E1A, artwork 614.3 × 497.5 at (97.9, -5.25) */
+    .media--time { --w: 811; background: #e54e1a; }
+    .media--time .layer-art {
+      left: 12.069%; top: -1.078%;
+      width: 75.748%; height: 102.155%;
+      object-fit: fill;
+    }
+
+    /* ---------- Other projects heading (290:3909) ----------
+       578 + 10 gap puts the paragraph at x=608, the same line as the
+       project images, so it shares the project grid (479 + 109). */
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 479fr) minmax(0, 812fr);
+      column-gap: clamp(24px, 7.57vw, 109px);
+      align-items: start;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 60px var(--gutter) 40px;
+      line-height: 1.1;
+    }
+
+    .section-head__title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .section-head__desc {
+      max-width: 675px;
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    /* ---------- About (290:7324) ---------- */
+    .section-head--about { padding-bottom: 50px; }
+
+    /* 290:3950 — three photos, 10.017 gap, centred in the 1400 row.
+       Shrink (and, above 1440, grow) is weighted by size, so proportions hold. */
+    .photos {
+      display: flex;
+      gap: 10.017px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+
+    .photo {
+      flex: 0 1 var(--w);
+      min-width: 0;
+      aspect-ratio: var(--ar);
+      margin: 0;
+      border-radius: 19.309px;
+      overflow: hidden;
+      background: var(--tag);
+    }
+    .photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo--pets     { --w: 364.183px; --ar: 364.183 / 485.577; }
+    .photo--street   { --w: 363.729px; --ar: 363.729 / 484.972; }
+    .photo--portrait { --w: 647.973px; --ar: 647.973 / 485.98; }
+
+    /* ---------- Case page: 2GIS (290:8895) ----------
+       Mask 1400 × 702, r16; photo 1424 × 996 at (-24, -35). */
+    .case-hero {
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 22px var(--gutter) 28px;
+    }
+
+    .case-hero__media {
+      position: relative;
+      aspect-ratio: 1400 / 702;
+      margin: 0;
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      background: #8a5a35;
+    }
+
+    .case-hero__media img {
+      position: absolute;
+      left: -1.714%; top: -4.986%;
+      width: 101.714%; height: 141.880%;
+      max-width: none;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* Simple in-file routing: only one page is visible at a time */
+    [data-page][hidden] { display: none !important; }
+
+    /* ---------- Footer (290:3962) ----------
+       Contacts start at x=508 (20 + 235 + 253); the gap narrows with the window. */
+    .footer {
+      margin-top: 20px;
+      background: #151515;
+      color: #fff;
+    }
+
+    .footer__inner {
+      display: grid;
+      grid-template-columns: 235px auto;
+      column-gap: clamp(24px, calc(25vw - 106px), 253px);
+      align-items: start;
+      width: 100%;
+      max-width: var(--page-max);
+      min-height: 261px;
+      margin: 0 auto;
+      padding: 20px var(--gutter);
+      font-size: 15px;
+    }
+
+    .footer__info {
+      display: flex;
+      flex-direction: column;
+      gap: 170px;
+      line-height: 1.1;
+    }
+
+    .footer__muted { color: rgba(255, 255, 255, .5); }
+
+    .footer__contacts {
+      margin: 0;
+      font-style: normal;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+    .footer__contacts p { margin: 0; }
+    .footer__contacts a { transition: opacity .15s ease; }
+    .footer__contacts a:hover { opacity: .6; }
+
+    /* ---------- Responsive ---------- */
+    @media (min-width: 1441px) {
+      /* Above the design width the photos grow, keeping their proportions */
+      .photo--pets     { flex-grow: 364.183; }
+      .photo--street   { flex-grow: 363.729; }
+      .photo--portrait { flex-grow: 647.973; }
+    }
+
+    @media (max-width: 900px) {
+      .header { flex-wrap: wrap; row-gap: 0; }
+      .logo { flex-basis: auto; }
+      .nav { order: 3; flex: 1 0 100%; padding-bottom: 12px; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        row-gap: 32px;
+        padding-top: 160px;
+      }
+      .hero__title { order: -1; font-size: 32px; }
+
+      .projects { gap: 48px; padding-top: 40px; }
+      .project {
+        grid-template-columns: 1fr;
+        row-gap: 20px;
+      }
+      .project__title br,
+      .project__desc br { display: none; }
+
+      .section-head {
+        grid-template-columns: 1fr;
+        row-gap: 16px;
+        padding-top: 64px;
+      }
+      .section-head__title { white-space: normal; }
+
+      .photos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .photo--portrait { grid-column: 1 / -1; }
+
+      .footer__inner {
+        grid-template-columns: 1fr;
+        row-gap: 32px;
+      }
+      .footer__info { display: contents; }
+      .footer__muted { order: 3; margin-top: 40px; }
+
+      .hero__title br,
+      .hero__clients br { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      :root { --gutter: 16px; }
+      .header__links { gap: 20px; }
+      .hero { padding-top: 96px; }
+      .hero__title { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="#">Ира Танага</a>
+
+    <nav class="nav" aria-label="Основная навигация">
+      <a class="pill" href="#" aria-current="page">Главная</a>
+      <a class="pill" href="#about">Обо мне</a>
+      <a class="pill" href="#projects">Проекты</a>
+    </nav>
+
+    <div class="header__links">
+      <a href="#cv">CV</a>
+      <a href="#contacts">Контакты</a>
+    </div>
+  </header>
+
+  <main data-page="home" id="home">
+    <section class="hero">
+      <p class="hero__clients">Работала с&nbsp;Т-Банком, кинотеатром Мираж, <br>культурным кварталом Брусницын и&nbsp;др.</p>
+      <h1 class="hero__title" style="margin:0">Привет! Я&nbsp;— Ира, продуктовый дизайнер. Создаю понятные <br>и&nbsp;эмоциональные интерфейсы</h1>
+    </section>
+
+    <section class="projects" id="projects" aria-label="Проекты">
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">B2C</li>
+            <li class="tag">Mobile</li>
+            <li class="tag">Концепт</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#2gis">Концепции ИИ-ассистента <br>по составлению маршрута <br>для прогулок для 2ГИС</a></h2>
+            <p class="project__desc">Разработала концепцию для внедрения ИИ-ассистента <br>внутрь приложения, которая помогла бы пользователям быстрее определяться, куда им сходить погулять</p>
+          </div>
+        </div>
+        <a class="project__media media--2gis" href="#2gis" aria-label="Концепции ИИ-ассистента для 2ГИС">
+          <img src="assets/iphone-mockup.jpg" alt="">
+        </a>
+      </article>
+
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">B2B</li>
+            <li class="tag">Mobile</li>
+            <li class="tag">Desktop</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#">Дизайн страницы списания материалов <br>со склада для мед.учреждений</a></h2>
+            <p class="project__desc">Я работала над системой управления складом медицинского центра. Основной сценарий&nbsp;— списание материалов в кабинет, на утилизацию, по сроку годности, бою или порче</p>
+          </div>
+        </div>
+        <a class="project__media media--warehouse" href="#" aria-label="Дизайн страницы списания материалов">
+          <img src="assets/macbook-office.jpg" alt="">
+        </a>
+      </article>
+
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">B2С</li>
+            <li class="tag">Mobile</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#">Decode&nbsp;— приложение для изучения языков програмирования</a></h2>
+            <p class="project__desc">Разработала с нуля платформу для обучения, которая была бы хорошо адаптирована для мобильных устройств и подходила ученикам с разным уровнем знаний</p>
+          </div>
+        </div>
+        <a class="project__media media--decode" href="#" aria-label="Decode">
+          <img src="assets/decode-cover.jpg" alt="">
+        </a>
+      </article>
+
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">B2С</li>
+            <li class="tag">Mobile</li>
+            <li class="tag">Desktop</li>
+            <li class="tag">Сайт</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#">Дизайн сайта для выставки культурного квартала<span style="letter-spacing:.16px"> «Брусницын»</span></a></h2>
+            <p class="project__desc">Разработала сайт для выставки «Брусницына» об их культурном прошлом. В процессе нашла способ восстановить старые архивные фотографии и сделать понятную инфографику для сложных корабельных вещей.</p>
+          </div>
+        </div>
+        <a class="project__media media--brusnitsyn" href="#" aria-label="Сайт для выставки «Брусницын»">
+          <img src="assets/macbook-mockup.jpg" alt="">
+        </a>
+      </article>
+    </section>
+
+    <section class="section-head" aria-labelledby="other-projects-title">
+      <h2 class="section-head__title" id="other-projects-title">Другие проекты, которые <br>заслуживают внимания</h2>
+      <p class="section-head__desc">За все свое время в&nbsp;дизайне я&nbsp;делала проекты не&nbsp;только в&nbsp;продуктовом, но&nbsp;и&nbsp;в&nbsp;графическом, моушн и&nbsp;веб дизайне. И&nbsp;о&nbsp;некоторых из&nbsp;них хочется также рассказать</p>
+    </section>
+
+    <section class="projects" aria-labelledby="other-projects-title">
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">Презентации</li>
+            <li class="tag">Инфографика</li>
+            <li class="tag">стажировка</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#">Дизайн презентация для Т-Бизнеса</a></h2>
+            <p class="project__desc">Создавала презентации и инфографику для различных суббрендов Т-Банка: продуктовые материалы и презентации для выступлений. Подбирала оформление под задачу, разрабатывала креативные шаблонные слайды, генерировала 3D-иллюстрации и занималась их обработкой.</p>
+          </div>
+        </div>
+        <a class="project__media media--tbiz" href="#" aria-label="Дизайн презентаций для Т-Бизнеса">
+          <div class="media__layers">
+            <img class="layer-cover" src="assets/tbiz-cover.jpg" alt="">
+            <img class="layer-mirror" src="assets/tbiz-cover.jpg" alt="">
+            <img class="layer-logo" src="assets/tbiz-logo.png" alt="">
+          </div>
+        </a>
+      </article>
+
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">Web</li>
+            <li class="tag">Сайт</li>
+            <li class="tag">Призер конкурса DAFES AWARDS’25</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#">Дизайн сайта, посвященному <br>изучению феномена времени</a></h2>
+            <p class="project__desc">Для конкурса разработала экспериментальный лонгрид, исследующий концепцию времени и&nbsp;его непостоянство. Основной упор был сделан на&nbsp;типографику и&nbsp;анимации.</p>
+          </div>
+        </div>
+        <a class="project__media media--time" href="#" aria-label="Сайт о феномене времени">
+          <div class="media__layers">
+            <img class="layer-art" src="assets/time-cover.jpg" alt="">
+          </div>
+        </a>
+      </article>
+    </section>
+
+    <section id="about" aria-labelledby="about-title">
+      <div class="section-head section-head--about">
+        <h2 class="section-head__title" id="about-title">О себе</h2>
+        <p class="section-head__desc">Уже 3 года в дизайне и с каждым годом все больше интереса к этому делу). Мне важно постоянно развиваться, поэтому я постоянно участвую в различных конкурсах. Это помогает смотреть на задачи под новым углом, быстро входить в незнакомый контекст и проверять свои решения в деле. Люблю сложные задачи, исследования и моменты, когда удаётся превратить хаос в понятный и удобный интерфейс. А в свободное время стараюсь проводить за встречами с друзьями и своими питомцами)</p>
+      </div>
+
+      <div class="photos">
+        <figure class="photo photo--pets"><img src="assets/about-pets.jpg" alt="Собака и кошка на диване" loading="lazy"></figure>
+        <figure class="photo photo--street"><img src="assets/about-street.jpg" alt="Ира на улице Санкт-Петербурга" loading="lazy"></figure>
+        <figure class="photo photo--portrait"><img src="assets/about-portrait.jpg" alt="Портрет Иры" loading="lazy"></figure>
+      </div>
+    </section>
+  </main>
+
+  <main data-page="2gis" id="2gis-page" hidden>
+    <section class="case-hero" aria-label="Концепции ИИ-ассистента по составлению маршрута для прогулок для 2ГИС">
+      <figure class="case-hero__media">
+        <img src="assets/2gis-hero.jpg" alt="Приложение 2ГИС с ИИ-ассистентом для прогулок на экране iPhone">
+      </figure>
+    </section>
+  </main>
+
+  <footer class="footer" id="contacts">
+    <div class="footer__inner">
+      <div class="footer__info">
+        <p>Ира Танага, <br>продуктовый дизайнер</p>
+        <p class="footer__muted">Санкт-Петербург, 2026</p>
+      </div>
+      <address class="footer__contacts">
+        <p>tg: <a href="https://t.me/irinka_tanaga" target="_blank" rel="noopener">@irinka_tanaga</a></p>
+        <p>почта: <a href="mailto:irtanaga@gmail.com">irtanaga@gmail.com</a></p>
+        <p>тел.: <a href="tel:+79882552475">+7 988-255-24-75</a></p>
+      </address>
+    </div>
+  </footer>
+
+  <script>
+    // In-file pages. "#2gis" opens the 2GIS case; any other hash is the home
+    // page (and "#about", "#projects", "#contacts" scroll to that section).
+    (function () {
+      var pages = document.querySelectorAll('[data-page]');
+      var homeLink = document.querySelector('.nav .pill[href="#"]');
+      var baseTitle = document.title;
+      var current = null;
+      var homeScroll = 0;
+      var toTop = false;
+
+      // Links to "#" (logo, "Главная") always open home at the top.
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[href="#"]');
+        if (a) toTop = true;
+      });
+
+      function route() {
+        var id = decodeURIComponent(location.hash.slice(1));
+        var page = id === '2gis' ? '2gis' : 'home';
+
+        if (current === 'home' && page !== 'home') homeScroll = window.scrollY;
+
+        pages.forEach(function (p) { p.hidden = p.dataset.page !== page; });
+        if (homeLink) {
+          if (page === 'home') homeLink.setAttribute('aria-current', 'page');
+          else homeLink.removeAttribute('aria-current');
+        }
+        document.title = page === '2gis' ? 'Концепции ИИ-ассистента для 2ГИС — ' + baseTitle : baseTitle;
+
+        var target = page === 'home' && id ? document.getElementById(id) : null;
+        if (target) {
+          target.scrollIntoView();
+        } else if (page === 'home' && current && current !== 'home' && !toTop) {
+          window.scrollTo(0, homeScroll);      // "Back" returns to the card
+        } else if (current !== null || page !== 'home') {
+          window.scrollTo(0, 0);
+        }
+
+        current = page;
+        toTop = false;
+      }
+
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      window.addEventListener('hashchange', route);
+      route();
+    })();
+  </script>
+</body>
+</html>
