@@ -1,0 +1,2655 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ира Танага</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --pill: #eaeaea;
+      --pill-hover: #dcdcdc;
+      --tag: #f7f7f7;
+      --card-radius: 16px;
+      --gutter: 20px;
+      /* Content cap. Design is 1440; above it the layout scales up
+         proportionally so a 14" MacBook (1512) keeps ~20px side margins. */
+      --page-max: 1680px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    p { margin: 0; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Header (290:8649) ----------
+       space-between: logo frame 129, pills group, links group.
+       At 1440 the pills start at x≈601. */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 0 max(var(--gutter), calc((100% - var(--page-max)) / 2 + var(--gutter)));
+      background: var(--bg);
+    }
+
+    .logo,
+    .header__links a {
+      font-size: 15px;
+      line-height: 0.9;
+      padding: 20px 0;
+      white-space: nowrap;
+    }
+
+    .logo { display: block; flex: 0 0 129px; }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 33px;
+      background: var(--pill);
+      font-size: 12px;
+      line-height: 1.1;
+      white-space: nowrap;
+      transition: background-color .15s ease;
+    }
+    .pill:hover { background: var(--pill-hover); }
+
+    .header__links {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .header__links a { display: block; }
+
+    .logo:hover,
+    .header__links a:hover { opacity: .6; }
+
+    /* Menu wrapper is layout-neutral on desktop (children stay header flex items);
+       the burger button only exists on mobile. */
+    .header__menu { display: contents; }
+    .burger { display: none; }
+
+    /* ---------- Hero (307:788) ----------
+       Frame 1440×514. Scribble sits in the top padding and is clipped
+       by the frame: left -5.1%, top -17.47%, 70.11% × 127.63%. */
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 479fr) minmax(0, 813fr);
+      column-gap: clamp(24px, 7.5vw, 108px);
+      align-items: start;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 420px var(--gutter) 34px;
+    }
+
+    .hero__scribble {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .hero__scribble img {
+      position: absolute;
+      left: -5.1%;
+      top: -17.47%;
+      width: 70.11%;
+      height: 127.63%;
+      max-width: none;
+    }
+
+    .hero__clients {
+      position: relative;
+      z-index: 1;
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    .hero__title {
+      position: relative;
+      z-index: 1;
+      font-size: 44px;
+      max-width: 672px; /* keep the Figma line breaks when the column grows */
+      font-weight: 500;
+      line-height: 0.9;
+    }
+
+    /* ---------- Projects (290:3826) ---------- */
+    .projects {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 20px var(--gutter);
+    }
+
+    .project {
+      display: grid;
+      grid-template-columns: minmax(0, 479fr) minmax(0, 812fr);
+      column-gap: clamp(24px, 7.57vw, 109px);
+      align-items: center;
+    }
+
+    .project__info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-self: stretch;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 33px;
+      background: var(--tag);
+      font-size: 12px;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .project__text {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      line-height: 1.1;
+    }
+
+    .project__title {
+      margin: 0;
+      max-width: 479px; /* keep the Figma line breaks when the column grows */
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+    .project__title a:hover { opacity: .6; }
+
+    .project__desc {
+      max-width: 425px;
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    /* Image card: the visible area equals the Figma mask (W × 487, rounded).
+       Inner layers are positioned in % of that area so they scale with it. */
+    .project__media {
+      --w: 812;
+      position: relative;
+      display: block;
+      width: calc(100% * var(--w) / 812);
+      aspect-ratio: var(--w) / 487;
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      isolation: isolate;
+      background: var(--tag);
+    }
+
+    .project__media img {
+      position: absolute;
+      max-width: none;
+      display: block;
+      object-fit: cover;
+    }
+    .project__media > img,
+    .media__layers { transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
+    .project__media:hover > img,
+    .project__media:hover .media__layers { transform: scale(1.02); }
+
+    /* Multi-layer cards: layers scale together on hover */
+    .media__layers {
+      position: absolute;
+      inset: 0;
+    }
+    .media__layers img { transition: none; }
+
+    /* 290:3858 — 868.113 × 579.025 at (-39, -17.86) */
+    .media--2gis img {
+      left: -4.803%; top: -3.667%;
+      width: 106.910%; height: 118.896%;
+    }
+
+    /* 290:3877 — 1117 × 744 at (-153, -77), mask 811 wide */
+    .media--warehouse { --w: 811; }
+    .media--warehouse img {
+      left: -18.866%; top: -15.811%;
+      width: 137.731%; height: 152.772%;
+    }
+
+    /* 290:3890/3891 — solid #194DF1 layer + 750 × 592 image at (30, 0), mask 810 wide */
+    .media--decode { --w: 810; background: #194df1; }
+    .media--decode img {
+      left: 3.704%; top: 0;
+      width: 92.593%; height: 121.561%;
+    }
+
+    /* 290:3908 — 861 × 526 frame at (-10, -10), image 100.07% × 109.11% inside it */
+    .media--brusnitsyn img {
+      left: -1.263%; top: -2.053%;
+      width: 106.108%; height: 117.849%;
+      object-fit: fill;
+    }
+
+    /* 290:3925 — mask 810 × 487. Cover 939 × 529 at (-129, -137),
+       its vertical mirror at (-129, 390), logo 143 × 34 at (63, 403). */
+    .media--tbiz { --w: 810; background: #ffd83a; }
+    .media--tbiz .layer-cover,
+    .media--tbiz .layer-mirror {
+      left: -15.926%;
+      width: 115.926%; height: 108.624%;
+    }
+    .media--tbiz .layer-cover { top: -28.131%; }
+    .media--tbiz .layer-mirror { top: 80.082%; transform: scaleY(-1); }
+    .media--tbiz .layer-logo {
+      left: 7.778%; top: 82.752%;
+      width: 17.654%; height: 6.982%;
+    }
+
+    /* 290:3943 — mask 811 × 487, solid #E54E1A, artwork 614.3 × 497.5 at (97.9, -5.25) */
+    .media--time { --w: 811; background: #e54e1a; }
+    .media--time .layer-art {
+      left: 12.069%; top: -1.078%;
+      width: 75.748%; height: 102.155%;
+      object-fit: fill;
+    }
+
+    /* ---------- Other projects heading (290:3909) ----------
+       578 + 10 gap puts the paragraph at x=608, the same line as the
+       project images, so it shares the project grid (479 + 109). */
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 479fr) minmax(0, 812fr);
+      column-gap: clamp(24px, 7.57vw, 109px);
+      align-items: start;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 60px var(--gutter) 40px;
+      line-height: 1.1;
+    }
+
+    .section-head__title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .section-head__desc {
+      max-width: 675px;
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    /* ---------- About (290:7324) ---------- */
+    .section-head--about { padding-bottom: 50px; }
+
+    /* 290:3950 — three photos, 10.017 gap, centred in the 1400 row.
+       Shrink (and, above 1440, grow) is weighted by size, so proportions hold. */
+    .photos {
+      display: flex;
+      gap: 10.017px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+
+    .photo {
+      flex: 0 1 var(--w);
+      min-width: 0;
+      aspect-ratio: var(--ar);
+      margin: 0;
+      border-radius: 19.309px;
+      overflow: hidden;
+      background: var(--tag);
+    }
+    .photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo--pets     { --w: 364.183px; --ar: 364.183 / 485.577; }
+    .photo--street   { --w: 363.729px; --ar: 363.729 / 484.972; }
+    .photo--portrait { --w: 647.973px; --ar: 647.973 / 485.98; }
+
+    /* ---------- Case page: 2GIS (290:8895) ----------
+       Mask 1400 × 702, r16; photo 1424 × 996 at (-24, -35). */
+    .case-hero {
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 22px var(--gutter) 28px;
+    }
+
+    .case-hero__media {
+      position: relative;
+      aspect-ratio: 1400 / 702;
+      margin: 0;
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      background: #8a5a35;
+    }
+
+    .case-hero__media img {
+      position: absolute;
+      left: -1.714%; top: -4.986%;
+      width: 101.714%; height: 141.880%;
+      max-width: none;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* ---------- Case page body: 2GIS (290:4135) ----------
+       Same two-column grid as the home page (479 + 109 gap), so every
+       text column lands on x=608 at 1440, just like in the design. */
+    .case-body {
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+
+    /* 290:4137 — tags + title, 46 below */
+    .case-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 479fr) minmax(0, 812fr);
+      column-gap: clamp(24px, 7.57vw, 109px);
+      align-items: start;
+      padding-bottom: 46px;
+    }
+
+    .case-intro__title {
+      margin: 0;
+      max-width: 672px; /* keep the Figma line breaks when the column grows */
+      font-size: 44px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    /* Section heading rows (290:4148, 4159, 4173, 4187): title | text */
+    .case-head {
+      display: grid;
+      grid-template-columns: minmax(0, 479fr) minmax(0, 812fr);
+      column-gap: clamp(24px, 7.57vw, 109px);
+      align-items: start;
+      padding: 60px 0 40px;
+      line-height: 1.1;
+    }
+    .case-head--task { padding-top: 40px; }
+
+    .case-head__title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+
+    .case-head__desc {
+      max-width: var(--w, 648px);
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    /* 290:4151 — "Проблема" 577 + "Решение" (flex), 205 high, gap 10 */
+    .case-cards {
+      display: grid;
+      grid-template-columns: minmax(0, 577fr) minmax(0, 813fr);
+      gap: 10px;
+    }
+
+    .case-card {
+      min-height: 205px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 20px;
+      border: .19px solid #fff;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+    .case-card--solution { padding-bottom: 44px; }
+
+    .case-card__title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .case-card p,
+    .case-card li {
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    .case-card ol {
+      max-width: 508px;
+      margin: 0;
+      padding-left: 22.5px;
+    }
+
+    /* Two phone cards side by side (290:4162, 4176): 695 × 586, gap 10 */
+    .case-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .case-shot {
+      position: relative;
+      container-type: inline-size;
+      aspect-ratio: 695 / 586;
+      margin: 0;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+
+    /* iPhone: 221.238 × 481 screen with the 247.652 × 506.033 bezel over it */
+    .phone {
+      position: absolute;
+      width: 31.834%;                 /* 221.238 / 695 */
+      aspect-ratio: 221.238 / 481;
+    }
+    .case-shot .phone {
+      left: 50%;
+      top: 8.874%;                    /* 52 / 586 */
+      transform: translateX(-50%);
+    }
+
+    .phone__screen {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border-radius: 2.376cqw;        /* 16.51 / 695 */
+      background: #f4f6fd;
+    }
+    .phone__screen img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .phone__bezel {
+      position: absolute;
+      left: -6.061%; top: -2.603%;
+      width: 111.94%; height: 105.21%;
+      max-width: none;
+      pointer-events: none;
+    }
+
+    /* 290:4191 — photo masked to 1400 × 725 (photo is 1399 × 933 at y = -63) */
+    .case-nav {
+      position: relative;
+      aspect-ratio: 1400 / 725;
+      margin: 0;
+      overflow: hidden;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+    .case-nav img {
+      position: absolute;
+      left: 0; top: -8.69%;           /* -63 / 725 */
+      width: 100%; height: auto;
+      max-width: none;
+      display: block;
+    }
+
+    /* "Liquid glass" button (system-btn): frosted white fill + soft shadow */
+    .glass {
+      background: rgba(255, 255, 255, .82);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      backdrop-filter: blur(20px) saturate(1.6);
+      box-shadow: 0 2px 40px rgba(0, 0, 0, .11), inset 0 0 0 .5px rgba(255, 255, 255, .7);
+      color: #404040;
+    }
+
+    /* 290:4195 — mascot 305 × 302, bubble at (223, 219), text at x=608, y=89 */
+    .assistant {
+      display: grid;
+      grid-template-columns: minmax(0, 479fr) minmax(0, 812fr);
+      column-gap: clamp(24px, 7.57vw, 109px);
+      align-items: start;
+      padding: 60px 0;
+    }
+
+    .assistant__visual {
+      position: relative;
+      min-height: 327px;              /* 219 + bubble height 108 */
+    }
+
+    .assistant__mascot {
+      display: block;
+      width: 305px;
+      height: 302px;
+    }
+
+    .assistant__bubble {
+      position: absolute;
+      left: 223px; top: 219px;
+      z-index: 1;
+      padding: 18px 27px 18px 24px;   /* 24 + 3 inner right padding */
+      border-radius: 20px;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: .38px;
+      line-height: normal;
+      white-space: nowrap;
+      color: #333;
+    }
+    .assistant__bubble em { font-style: normal; color: #19aa1e; }
+
+    .assistant__text {
+      max-width: 558px;
+      margin-top: 89px;
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    /* 290:4210 — 1399 × 586 card. Everything inside is sized in --u
+       (1 design px) so the chips keep their positions as the page scales. */
+    .case-demo { padding: 20px 0; }
+
+    .case-demo__card {
+      --u: calc(100cqw / 1399);
+      position: relative;
+      container-type: inline-size;
+      aspect-ratio: 1399 / 586;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+
+    .case-demo__card .phone {
+      left: calc(var(--u) * 593);     /* 212 + 381 */
+      top: calc(var(--u) * 52);
+      width: calc(var(--u) * 221.238);
+    }
+    .case-demo__card .phone__screen { border-radius: calc(var(--u) * 16.51); }
+
+    .chips { display: contents; }
+
+    .chip {
+      position: absolute;
+      left: calc(var(--u) * var(--x));
+      top: calc(var(--u) * var(--y));
+      padding: calc(var(--u) * 12) calc(var(--u) * 19) calc(var(--u) * 12) calc(var(--u) * 16);
+      border-radius: 999px;
+      font-size: calc(var(--u) * 15);
+      font-weight: 500;
+      line-height: normal;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 900px) {
+      .case-intro,
+      .case-head,
+      .assistant {
+        grid-template-columns: 1fr;
+        row-gap: 16px;
+      }
+      .case-intro { padding-top: 8px; row-gap: 24px; }
+      .case-intro__title { font-size: 32px; }
+      .case-intro__title br,
+      .case-head__desc br,
+      .case-card br { display: none; }
+      .case-head { padding-top: 48px; }
+      .case-head--task { padding-top: 24px; }
+
+      .case-cards,
+      .case-pair { grid-template-columns: 1fr; }
+      .case-card { min-height: 0; }
+      .case-card--solution { padding-bottom: 24px; }
+
+      .assistant__visual { min-height: 0; }
+      .assistant__mascot { width: min(240px, 60vw); height: auto; }
+      .assistant__bubble {
+        position: relative;
+        left: auto; top: auto;
+        display: inline-block;
+        margin: -44px 0 0 24px;
+        padding: 14px 20px;
+        font-size: 20px;
+        white-space: normal;
+      }
+      .assistant__bubble br { display: none; }
+      .assistant__text { margin-top: 0; }
+
+      /* The demo card turns into a column: phone, then the prompts */
+      .case-demo__card {
+        --u: 1px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        aspect-ratio: auto;
+        padding: 24px 16px;
+      }
+      .case-demo__card .phone {
+        position: relative;
+        left: auto; top: auto;
+        flex: none;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+      }
+      .chip { position: static; }
+    }
+
+    /* ---------- Case page: warehouse (303:615) ----------
+       Columns are 577 + 10, so the title, body copy and the right-hand
+       cards share one left edge. Hero mask is 1400 × 494, r16; the photo
+       is 1400 × 933 shifted up by 130. */
+    .case-warehouse {
+      display: flex;
+      flex-direction: column;
+      gap: 17px;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 17px var(--gutter) 20px;
+    }
+
+    .case-hero--warehouse {
+      width: auto;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+    .case-hero--warehouse .case-hero__media { aspect-ratio: 1400 / 494; }
+    .case-hero--warehouse .case-hero__media img {
+      left: 0;
+      top: -26.316%;            /* 130 / 494 */
+      width: 100%;
+      height: 188.866%;         /* 933 / 494 */
+    }
+
+    .case-body--warehouse {
+      display: flex;
+      flex-direction: column;
+      gap: 17px;
+      width: auto;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .case-intro--warehouse,
+    .wh-split,
+    .wh-roles,
+    .wh-logic {
+      display: grid;
+      grid-template-columns: minmax(0, 577fr) minmax(0, 813fr);
+      column-gap: 10px;
+      align-items: start;
+    }
+
+    .wh-split--context { padding: 40px 0; }
+    .wh-split--logic { padding: 60px 0 40px; }
+
+    .wh-split__title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+
+    .wh-split__text {
+      max-width: var(--w, 425px);
+      font-size: 15px;
+      line-height: 1.1;
+    }
+
+    .wh-roles { align-items: stretch; }
+
+    .wh-roles__list,
+    .wh-logic__list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .wh-logic__list { grid-column: 2; }
+
+    .wh-card { min-height: 0; }
+    .wh-logic-card { min-height: 146px; }
+
+    .wh-split__text p { margin: 0; }
+    .wh-split__more { margin-top: 1.1em; }
+
+    /* Task list keeps the looser Figma leading (1.7 / 1.5). */
+    .wh-task { line-height: 1.5; }
+    .wh-task p { line-height: 1.7; }
+    .wh-task ul { margin: 0; padding: 0; list-style: none; }
+    .wh-task li { line-height: 1.5; }
+
+    /* Screen cards (290:5244, 290:5294): gray field 1400 × 677,
+       screen 881 × 603 centred, 37px above and below. */
+    .wh-shot { margin: 0; padding: 20px 0; }
+    .wh-shot__card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.643% 0;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+    .wh-shot__card img {
+      width: 62.929%;
+      height: auto;
+      display: block;
+    }
+
+    /* Three phones (290:5523): group 829 × 538, 69px above and 70px below. */
+    .wh-shot__card--phones { padding: 4.929% 0 5%; }
+    .wh-shot__card--phones img { width: 59.182%; }
+
+    @media (max-width: 900px) {
+      .case-intro--warehouse,
+      .wh-split,
+      .wh-roles,
+      .wh-logic {
+        grid-template-columns: 1fr;
+        row-gap: 16px;
+      }
+      .wh-split--context { padding: 8px 0 24px; }
+      .wh-split--logic { padding: 32px 0 24px; }
+      .wh-logic__list { grid-column: auto; }
+      .wh-logic-card { min-height: 0; }
+      .case-intro--warehouse .case-intro__title br,
+      .wh-card br,
+      .wh-split__text br { display: none; }
+      .wh-shot { padding: 8px 0; }
+      .wh-shot__card { padding: 16px 12px; }
+      .wh-shot__card img { width: 100%; }
+    }
+
+    /* ---------- Case page: Decode (304:617) ----------
+       Same 577 + 10 columns. Hero mask is 1400 × 633, r16. */
+    .case-decode,
+    .case-brus {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+    }
+
+    .case-hero--decode {
+      width: auto;
+      max-width: none;
+      margin: 0;
+    }
+    .case-hero--decode .case-hero__media {
+      aspect-ratio: 1400 / 633;
+      background: #194df2;
+    }
+    .case-hero--decode .case-hero__media img {
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .case-body--decode,
+    .case-body--brus {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: auto;
+      max-width: none;
+      margin: 0;
+      padding: 0 var(--gutter) 20px;
+    }
+
+    .case-intro--decode { padding-bottom: 47px; }
+
+    .dc-problems .case-card { min-height: 225px; }
+
+    .dc-insights {
+      max-width: 648px;
+      margin: 0;
+      padding-left: 22.5px;
+      font-size: 15px;
+    }
+    .dc-insights li { line-height: 1.1; margin-bottom: .5em; }
+    .dc-insights li:last-child { margin-bottom: 0; }
+
+    .dc-comp {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .dc-comp__card { gap: 20px; min-height: 0; }
+    .dc-proscons {
+      display: flex;
+      gap: 70px;
+      align-items: flex-start;
+      font-size: 15px;
+      line-height: 1.1;
+    }
+    .dc-pair {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    .dc-pair--plus { width: 310px; flex: none; }
+    .dc-pair ol { margin: 0; padding-left: 22.5px; }
+    .dc-ol--mimi { max-width: 195px; }
+    .dc-ol--enki { width: 239px; max-width: 100%; }
+
+    /* Userflow diagram (290:7460): gray field 1398 × 599, chart 1136 × 559. */
+    .dc-flow { margin: 0; }
+    .dc-flow__card {
+      display: flex;
+      justify-content: center;
+      padding: 1.431% 0 1.403%;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+    .dc-flow__card img {
+      width: 81.259%;
+      height: auto;
+      display: block;
+    }
+
+    /* Design screens (290:7466): splash, then two rows, 14px apart, 20px inset. */
+    .dc-showcase {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 20px 0;
+    }
+    .dc-splash { margin: 0; }
+    .dc-splash img,
+    .dc-shots img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: var(--card-radius);
+    }
+    .dc-shots {
+      display: grid;
+      grid-template-columns: minmax(0, 694fr) minmax(0, 692fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .case-intro--decode { padding-bottom: 8px; row-gap: 24px; }
+      .dc-problems .case-card { min-height: 0; }
+      .dc-insights { max-width: none; }
+      .dc-proscons { flex-direction: column; gap: 16px; }
+      .dc-pair--plus,
+      .dc-ol--enki { width: auto; }
+      .dc-flow__card { padding: 16px 12px; }
+      .dc-flow__card img { width: 100%; }
+      .dc-showcase { gap: 10px; padding: 8px 0; }
+      .dc-shots { grid-template-columns: 1fr; }
+    }
+
+    /* ---------- Case page: Brusnitsyn (304:619) ----------
+       Hero mask 1400 × 661. Photos are 460 × 306, r19. Screen sits in a
+       1400 × 599 gray card, 921 × 549 and centred. */
+    .case-hero--brus {
+      width: auto;
+      max-width: none;
+      margin: 0;
+    }
+    .case-hero--brus .case-hero__media { aspect-ratio: 1400 / 661; background: #cfc8c2; }
+    .case-hero--brus .case-hero__media img {
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .bz-photos { margin: 0; padding: 20px 0; }
+    .bz-photos__row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .bz-photos__row img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 459.653 / 306.435;
+      object-fit: cover;
+      border-radius: 19.367px;
+    }
+    .bz-photos figcaption {
+      margin: 16px 0 0;
+      font-size: 12px;
+      line-height: 1.1;
+      text-align: center;
+      color: rgba(0, 0, 0, .3);
+    }
+
+    .bz-screen { margin: 0; }
+    .bz-screen__card {
+      display: flex;
+      justify-content: center;
+      padding: 1.786% 0;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+    .bz-screen__card img {
+      width: 65.786%;
+      height: auto;
+      display: block;
+    }
+
+    @media (max-width: 900px) {
+      .bz-photos { padding: 8px 0; }
+      .bz-photos__row { grid-template-columns: 1fr; }
+      .bz-screen__card { padding: 16px 12px; }
+      .bz-screen__card img { width: 100%; }
+    }
+
+    /* Continuation (304:620): pairs of 695 × 360 cards, wide 1400 × 599
+       screens, and a full-bleed style board. */
+    .bz-shots {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .bz-shots--follow { padding-top: 20px; }
+    .bz-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .bz-mini {
+      display: flex;
+      justify-content: center;
+      padding: 3.597% 0 1.727%;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+    .bz-mini img {
+      width: 77.986%;
+      height: auto;
+      display: block;
+    }
+    .bz-screen__card--wide { padding-bottom: 2.214%; }
+    .bz-screen__card--wide img,
+    .bz-screen__card--920 img { width: 65.714%; }
+
+    .bz-guide { margin: 0 calc(var(--gutter) * -1); }
+    .bz-guide img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 900px) {
+      .bz-pair { grid-template-columns: 1fr; }
+      .bz-mini { padding: 16px 12px; }
+      .bz-mini img,
+      .bz-screen__card--wide img,
+      .bz-screen__card--920 img { width: 100%; }
+      .bz-guide { margin: 0; }
+      .bz-shots--follow { padding-top: 0; }
+    }
+
+    /* ---------- Case page: T-Business (307:621) ----------
+       No title row. Hero mask is 1399 × 661. Slides sit in a gray card,
+       three across, 442 × 250, gap 14, padding 20. */
+    .case-tbiz {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+    }
+    .case-hero--tbiz {
+      width: auto;
+      max-width: none;
+      margin: 0;
+    }
+    .case-hero--tbiz .case-hero__media { aspect-ratio: 1399 / 661; background: #f6c445; }
+    .case-hero--tbiz .case-hero__media img {
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .case-body--tbiz {
+      display: flex;
+      flex-direction: column;
+      width: auto;
+      max-width: none;
+      margin: 0;
+      padding: 0 var(--gutter) 20px;
+    }
+    .tb-copy { max-width: var(--w, 534px); font-size: 15px; line-height: 1.1; }
+    .tb-copy p { margin: 0; }
+    .tb-note { margin-top: 1.1em; color: rgba(0, 0, 0, .3); }
+    .tb-slides {
+      display: flex;
+      flex-direction: column;
+      gap: 13.573px;
+      padding: 19.948px;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+    .tb-slides__row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13.573px;
+    }
+    .tb-slides img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 442.363 / 249.51;
+      object-fit: cover;
+      border-radius: 8.674px;
+    }
+    /* 307:622 — talk slides. Card padding 19.331, gap 13.717, radius 15.465.
+       Wide slides are 4000×2255. Pairs are 673×380 and 672×379, gap 14. */
+    .tb-talk {
+      display: flex;
+      flex-direction: column;
+      gap: 13.717px;
+      padding: 19.331px;
+      border-radius: 15.465px;
+      background: var(--tag);
+    }
+    .tb-talk img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4000 / 2255;
+      object-fit: cover;
+      border-radius: 7.22px;
+    }
+    .tb-talk__pair {
+      display: grid;
+      grid-template-columns: 673fr 672fr;
+      gap: 14px;
+    }
+    /* 307:623 — charts sit on white. Wide slide is full content width,
+       the pair is 692 × 390 with a 14px gap. */
+    .tb-charts {
+      display: flex;
+      flex-direction: column;
+      gap: 14.167px;
+    }
+    .tb-charts img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4000 / 2255;
+      object-fit: cover;
+      border-radius: 7.457px;
+    }
+    .tb-charts__pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .tb-charts__pair img { border-radius: 7.461px; }
+    /* Three covers, 457 × 647, gap 12, aligned to the bottom edge. */
+    .tb-covers {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 11.978px;
+      align-items: end;
+    }
+    .tb-covers img,
+    .tb-offers img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1240 / 1755;
+      object-fit: cover;
+    }
+    .tb-covers img { border-radius: 6.304px; }
+    /* Commercial pages in a gray card. Rows are 445/444/444, gap 12. */
+    .tb-offers {
+      display: flex;
+      flex-direction: column;
+      gap: 13.729px;
+      padding: 19.357px;
+      border-radius: 15.485px;
+      background: var(--tag);
+    }
+    .tb-offers__row {
+      display: grid;
+      grid-template-columns: 445fr 444fr 444fr;
+      gap: 11.592px;
+      align-items: end;
+    }
+    .tb-offers img { border-radius: 7.226px; }
+    /* 307:624 — subbrand slides. Card padding 19.372, gap 13.734.
+       Pairs are 673×379 and 672×379, gap 14. Wide slides are 1359×766. */
+    .tb-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 13.734px;
+      padding: 19.372px;
+      border-radius: 15.497px;
+      background: var(--tag);
+    }
+    .tb-brand img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 3248 / 1832;
+      object-fit: cover;
+      border-radius: 9.206px;
+    }
+    .tb-brand__pair {
+      display: grid;
+      grid-template-columns: 673fr 672fr;
+      gap: 14px;
+    }
+    .tb-brand__wide { border-radius: 7.229px; }
+    .tb-brand__edge { border: 0.368px solid #fff; }
+
+    /* ---------- Case page: time (314:925) ----------
+       Gray card 1400×599. Browser 881×524 centered, shot inset 12px.
+       Nav overlay and the small logo patch sit on the screenshot. */
+    .case-time {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: var(--page-max);
+      margin: 0 auto;
+    }
+    .case-body--time {
+      display: flex;
+      flex-direction: column;
+      width: auto;
+      max-width: none;
+      margin: 0;
+      padding: 22px var(--gutter) 20px;
+    }
+    .time-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1400 / 599;
+      margin-bottom: 28px;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+    .time-browser {
+      position: relative;
+      width: 62.9286%;
+      aspect-ratio: 881 / 524;
+      border: 0.93px solid rgba(255, 255, 255, .4);
+      border-radius: 14.885px;
+      background: #151515;
+    }
+    .time-browser__shot {
+      position: absolute;
+      left: 1.3621%;
+      top: 2.2901%;
+      width: 97.1623%;
+      height: 95.0765%;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    .time-browser__shot img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 107.39%;
+      max-width: none;
+    }
+    .time-browser__nav {
+      position: absolute;
+      left: 2.454%;
+      top: 8.88%;
+      width: 94.078%;
+      height: 4.5378%;
+      object-fit: cover;
+    }
+    .time-browser__blank {
+      position: absolute;
+      left: 46.9864%;
+      top: 18.3874%;
+      width: 10.86%;
+      height: 2.485%;
+      background: #fff;
+    }
+    .time-browser__logo {
+      position: absolute;
+      left: 46.378%;
+      top: 16.1164%;
+      width: 11.4706%;
+      height: 4.3217%;
+      -webkit-mask: url("assets/time-logo-mask.svg") center / 100% 100% no-repeat;
+      mask: url("assets/time-logo-mask.svg") center / 100% 100% no-repeat;
+      overflow: hidden;
+    }
+    .time-browser__logo img {
+      position: absolute;
+      left: -392.43%;
+      top: -329.96%;
+      width: 847.05%;
+      height: 2362.56%;
+      max-width: none;
+    }
+    .time-intro {
+      display: flex;
+      align-items: flex-start;
+      gap: 229px;
+      padding-bottom: 47px;
+    }
+    .time-intro__title {
+      flex: 0 0 672px;
+      width: 672px;
+      margin: 0;
+      font-size: 44px;
+      font-weight: 500;
+      line-height: 1;
+    }
+    /* 290:9258 — two rows of 695×360 screens, gap 10, then the film
+       in the empty 881×524 frame, then the laptop photo. */
+    .time-shots {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .time-shots .time-screen { margin-bottom: 0; }
+    .time-browser video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: inherit;
+    }
+    .time-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .time-mini {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 695 / 360;
+      border-radius: var(--card-radius);
+      background: var(--tag);
+    }
+    .time-mini__browser {
+      position: relative;
+      width: 74.532%;
+      aspect-ratio: 518 / 308;
+      overflow: hidden;
+      border: 0.911px solid rgba(255, 255, 255, .4);
+      border-radius: 8px;
+      background: #151515;
+    }
+    .time-mini__shot {
+      position: absolute;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+    .time-mini__shot img {
+      position: absolute;
+      max-width: none;
+    }
+    .time-mini__shot--a {
+      left: 1.351%;
+      top: 2.273%;
+      width: 97.297%;
+      height: 95.238%;
+    }
+    .time-mini__shot--a img { left: 0; top: 0; width: 100%; height: 107.39%; }
+    .time-mini__shot--b {
+      left: 1.351%;
+      top: 2.273%;
+      width: 97.104%;
+      height: 93.506%;
+    }
+    .time-mini__shot--b img { left: -3.9%; top: -4.59%; width: 107.79%; height: 113.78%; }
+    .time-mini__shot--c {
+      left: 1.351%;
+      top: 37.338%;
+      width: 97.104%;
+      height: 60.065%;
+    }
+    .time-mini__shot--c img { left: -3.9%; top: -62.83%; width: 107.79%; height: 177.13%; }
+    .time-mini__shot--d {
+      left: 1.351%;
+      top: 2.273%;
+      width: 97.297%;
+      height: 95.455%;
+    }
+    .time-mini__shot--d img { left: 0; top: 0; width: 100%; height: 107.39%; }
+    .time-mini__shot--e {
+      left: 1.351%;
+      top: 2.273%;
+      width: 97.297%;
+      height: 93.831%;
+    }
+    .time-mini__shot--e img { left: -3.95%; top: -4.53%; width: 107.81%; height: 113.7%; }
+    .time-mini__shot--f {
+      left: 1.351%;
+      top: 76.948%;
+      width: 97.297%;
+      height: 20.455%;
+    }
+    .time-mini__shot--f img { left: -3.95%; top: -379.5%; width: 107.81%; height: 521.57%; }
+    .time-mac {
+      position: relative;
+      width: 100%;
+      margin: 0;
+      aspect-ratio: 1863 / 1057;
+      overflow: hidden;
+      border-radius: var(--card-radius);
+    }
+    .time-mac img {
+      position: absolute;
+      left: -1.61%;
+      top: -12.02%;
+      width: 103.06%;
+      height: 121.11%;
+      max-width: none;
+    }
+
+    @media (max-width: 900px) {
+      .tb-slides { padding: 12px; }
+      .tb-slides__row { grid-template-columns: 1fr; }
+      .tb-talk,
+      .tb-brand { padding: 12px; }
+      .tb-talk__pair,
+      .tb-charts__pair,
+      .tb-brand__pair { grid-template-columns: 1fr; }
+      .tb-covers,
+      .tb-offers__row { grid-template-columns: 1fr; }
+      .tb-offers { padding: 12px; }
+      .time-intro { flex-direction: column; gap: 16px; }
+      .time-intro__title { flex-basis: auto; width: auto; font-size: 32px; }
+      .time-pair { grid-template-columns: 1fr; }
+    }
+
+    /* ---------- Mobile tweaks for the project pages ---------- */
+    @media (max-width: 900px) {
+      /* Main title 24px, 18px between the tags and the title */
+      .case-intro,
+      .case-intro--warehouse,
+      .case-intro--decode { row-gap: 18px; }
+      .case-intro__title,
+      .time-intro__title,
+      .case-head__title,
+      .wh-split__title { font-size: 24px; }
+      .time-intro { gap: 18px; }
+
+      /* Keep the tags-to-title gap unchanged; make tags/intro to following visual 30px. */
+      .case-intro--warehouse { padding-bottom: 13px; }
+      .case-intro--decode { padding-bottom: 20px; }
+      .case-body--brus .case-intro { padding-bottom: 20px; }
+
+      /* 2GIS: more air before the assistant text; the chat card keeps only the phone,
+         with equal space above and below it */
+      .assistant { row-gap: 40px; }
+      .case-demo .chips { display: none; }
+      .case-demo__card { gap: 0; padding: 24px 16px; }
+
+      /* Warehouse and T-Business: one blank line before the separated paragraph */
+      .wh-split__text .wh-split__more { margin-top: 1.1em; }
+      .tb-copy > p:nth-child(2) { margin-top: 1.1em; }
+
+      /* Decode competitors: every list starts on the same vertical line */
+      .dc-pair > p { flex: 0 0 64px; }
+    }
+
+    /* Simple in-file routing: only one page is visible at a time */
+    [data-page][hidden] { display: none !important; }
+
+    /* ---------- Footer (290:3962) ----------
+       Contacts start at x=508 (20 + 235 + 253); the gap narrows with the window. */
+    .footer {
+      margin-top: 20px;
+      background: #151515;
+      color: #fff;
+    }
+
+    .footer__inner {
+      display: grid;
+      grid-template-columns: 235px auto;
+      column-gap: clamp(24px, calc(25vw - 106px), 253px);
+      align-items: start;
+      width: 100%;
+      max-width: var(--page-max);
+      min-height: 261px;
+      margin: 0 auto;
+      padding: 20px var(--gutter);
+      font-size: 15px;
+    }
+
+    .footer__info {
+      display: flex;
+      flex-direction: column;
+      gap: 170px;
+      line-height: 1.1;
+    }
+
+    .footer__muted { color: rgba(255, 255, 255, .5); }
+
+    .footer__contacts {
+      margin: 0;
+      font-style: normal;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+    .footer__contacts p { margin: 0; }
+    .footer__contacts a { transition: opacity .15s ease; }
+    .footer__contacts a:hover { opacity: .6; }
+
+    /* ---------- Responsive ---------- */
+    @media (min-width: 1441px) {
+      /* Above the design width the photos grow, keeping their proportions */
+      .photo--pets     { flex-grow: 364.183; }
+      .photo--street   { flex-grow: 363.729; }
+      .photo--portrait { flex-grow: 647.973; }
+    }
+
+    @media (max-width: 900px) {
+      /* Header (317:1152): name + 32px burger, 20px side padding.
+         Everything else lives in the dropdown menu. */
+      .header { padding-left: 20px; padding-right: 20px; gap: 16px; }
+      .logo { flex: 0 1 auto; }
+
+      .burger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 0;
+        border-radius: 33px;
+        background: var(--pill);
+        color: var(--text);
+        cursor: pointer;
+        transition: background-color .15s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .burger:hover { background: var(--pill-hover); }
+      .burger:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+      /* 16px "menu" icon: three 12px bars, 3.33px apart */
+      .burger__bars { position: relative; display: block; width: 12px; height: 12px; }
+      .burger__bars span {
+        position: absolute;
+        left: 0; right: 0; top: 50%;
+        height: 1.5px;
+        margin-top: -.75px;
+        border-radius: 1px;
+        background: currentColor;
+        transition: transform .2s ease, opacity .15s ease;
+      }
+      .burger__bars span:nth-child(1) { transform: translateY(-3.33px); }
+      .burger__bars span:nth-child(3) { transform: translateY(3.33px); }
+      .header.is-open .burger__bars span:nth-child(1) { transform: rotate(45deg); }
+      .header.is-open .burger__bars span:nth-child(2) { opacity: 0; }
+      .header.is-open .burger__bars span:nth-child(3) { transform: rotate(-45deg); }
+
+      .header__menu {
+        display: none;
+        position: absolute;
+        left: 0; right: 0; top: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px 20px 24px;
+        background: var(--bg);
+        border-bottom: 1px solid var(--pill);
+      }
+      .header.is-open .header__menu {
+        display: flex;
+        animation: menu-in .18s ease-out;
+      }
+      @keyframes menu-in {
+        from { opacity: 0; transform: translateY(-6px); }
+        to   { opacity: 1; transform: none; }
+      }
+      .header__menu .nav { flex-wrap: wrap; }
+      /* CV and Контакты use the same bubble as the nav pills */
+      .header__menu .header__links {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 8px;
+      }
+      .header__menu .header__links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 16px;
+        border-radius: 33px;
+        background: var(--pill);
+        font-size: 12px;
+        line-height: 1.1;
+        transition: background-color .15s ease;
+      }
+      .header__menu .header__links a:hover { opacity: 1; background: var(--pill-hover); }
+
+      /* Hero (317:1187): flex column, gap 16, padding 300 16 16.
+         Title first, clients line second; scribble keeps its 1610×1047 ratio:
+         661px wide at (-126, -63), clipped by the hero. */
+      .hero {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 300px var(--gutter) 16px;
+      }
+      .hero__scribble img {
+        left: -126px;
+        top: -63px;
+        width: 661px;
+        height: auto;
+      }
+      .hero__title { order: -1; font-size: 24px; line-height: 1; }
+
+      /* Projects (318:1217): tags → 18 → title → 10 → text → 30 → image; 50 between projects */
+      .projects { gap: 50px; padding-top: 40px; }
+      #projects { padding-top: 48px; }
+      .project {
+        grid-template-columns: 1fr;
+        row-gap: 30px;
+      }
+      .project__info { gap: 18px; }
+      .project__text { gap: 10px; }
+      .project__title { font-size: 20px; }
+      .project__desc { max-width: 314px; }
+      .project__title br,
+      .project__desc br { display: none; }
+      .project__title br.keep-br { display: inline; }
+
+      .section-head {
+        grid-template-columns: 1fr;
+        row-gap: 16px;
+        padding-top: 64px;
+      }
+      .section-head__title { white-space: normal; }
+
+      .photos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .photo--portrait { grid-column: 1 / -1; }
+
+      .footer__inner {
+        grid-template-columns: 1fr;
+        row-gap: 32px;
+      }
+      .footer__info { display: contents; }
+      .footer__muted { order: 3; margin-top: 40px; }
+
+    }
+
+    /* Figma line breaks in the hero fit from ~360px; on narrower screens let it wrap */
+    @media (max-width: 359px) {
+      .hero__title br,
+      .hero__clients br { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      :root { --gutter: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="#">Ира Танага</a>
+
+    <div class="header__menu" id="site-menu">
+      <nav class="nav" aria-label="Основная навигация">
+        <a class="pill" href="#" aria-current="page">Главная</a>
+        <a class="pill" href="#about">Обо мне</a>
+        <a class="pill" href="#projects">Проекты</a>
+      </nav>
+
+      <div class="header__links">
+        <a href="#cv">CV</a>
+        <a href="#contacts">Контакты</a>
+      </div>
+    </div>
+
+    <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-menu">
+      <span class="burger__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+  </header>
+
+  <main data-page="home" id="home">
+    <section class="hero">
+      <div class="hero__scribble" aria-hidden="true">
+        <img src="assets/hero-scribble.jpg" width="1610" height="1047" alt="">
+      </div>
+      <p class="hero__clients">Работала с&nbsp;Т-Банком, кинотеатром Мираж, культурным кварталом Брусницын и&nbsp;др.</p>
+      <h1 class="hero__title" style="margin:0">Привет! Я&nbsp;— Ира, продуктовый дизайнер. Создаю понятные <br>и&nbsp;эмоциональные интерфейсы</h1>
+    </section>
+
+    <section class="projects" id="projects" aria-label="Проекты">
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">B2C</li>
+            <li class="tag">Mobile</li>
+            <li class="tag">Концепт</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#2gis">Концепции ИИ-ассистента <br class="keep-br">по составлению маршрута <br class="keep-br">для прогулок для 2ГИС</a></h2>
+            <p class="project__desc">Разработала концепцию для внедрения ИИ-ассистента внутрь приложения, которая помогла бы пользователям быстрее определяться, куда им сходить погулять</p>
+          </div>
+        </div>
+        <a class="project__media media--2gis" href="#2gis" aria-label="Концепции ИИ-ассистента для 2ГИС">
+          <img src="assets/iphone-mockup.jpg" alt="">
+        </a>
+      </article>
+
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">B2B</li>
+            <li class="tag">Mobile</li>
+            <li class="tag">Desktop</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#warehouse">Дизайн страницы списания материалов <br>со склада для мед.учреждений</a></h2>
+            <p class="project__desc">Я работала над системой управления складом медицинского центра. Основной сценарий&nbsp;— списание материалов в кабинет, на утилизацию, по сроку годности, бою или порче</p>
+          </div>
+        </div>
+        <a class="project__media media--warehouse" href="#warehouse" aria-label="Дизайн страницы списания материалов">
+          <img src="assets/macbook-office.jpg" alt="">
+        </a>
+      </article>
+
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">B2С</li>
+            <li class="tag">Mobile</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#decode">Decode&nbsp;— приложение для изучения языков програмирования</a></h2>
+            <p class="project__desc">Разработала с нуля платформу для обучения, которая была бы хорошо адаптирована для мобильных устройств и подходила ученикам с разным уровнем знаний</p>
+          </div>
+        </div>
+        <a class="project__media media--decode" href="#decode" aria-label="Decode">
+          <img src="assets/decode-cover.jpg" alt="">
+        </a>
+      </article>
+
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">B2С</li>
+            <li class="tag">Mobile</li>
+            <li class="tag">Desktop</li>
+            <li class="tag">Сайт</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#brusnitsyn">Дизайн сайта для выставки культурного квартала<span style="letter-spacing:.16px"> «Брусницын»</span></a></h2>
+            <p class="project__desc">Разработала сайт для выставки «Брусницына» об их культурном прошлом. В процессе нашла способ восстановить старые архивные фотографии и сделать понятную инфографику для сложных корабельных вещей.</p>
+          </div>
+        </div>
+        <a class="project__media media--brusnitsyn" href="#brusnitsyn" aria-label="Сайт для выставки «Брусницын»">
+          <img src="assets/macbook-mockup.jpg" alt="">
+        </a>
+      </article>
+    </section>
+
+    <section class="section-head" aria-labelledby="other-projects-title">
+      <h2 class="section-head__title" id="other-projects-title">Другие проекты, которые <br>заслуживают внимания</h2>
+      <p class="section-head__desc">За все свое время в&nbsp;дизайне я&nbsp;делала проекты не&nbsp;только в&nbsp;продуктовом, но&nbsp;и&nbsp;в&nbsp;графическом, моушн и&nbsp;веб дизайне. И&nbsp;о&nbsp;некоторых из&nbsp;них хочется также рассказать</p>
+    </section>
+
+    <section class="projects" aria-labelledby="other-projects-title">
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">Презентации</li>
+            <li class="tag">Инфографика</li>
+            <li class="tag">стажировка</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#tbiz">Дизайн презентация для Т-Бизнеса</a></h2>
+            <p class="project__desc">Создавала презентации и инфографику для различных суббрендов Т-Банка: продуктовые материалы и презентации для выступлений. Подбирала оформление под задачу, разрабатывала креативные шаблонные слайды, генерировала 3D-иллюстрации и занималась их обработкой.</p>
+          </div>
+        </div>
+        <a class="project__media media--tbiz" href="#tbiz" aria-label="Дизайн презентаций для Т-Бизнеса">
+          <div class="media__layers">
+            <img class="layer-cover" src="assets/tbiz-cover.jpg" alt="">
+            <img class="layer-mirror" src="assets/tbiz-cover.jpg" alt="">
+            <img class="layer-logo" src="assets/tbiz-logo.png" alt="">
+          </div>
+        </a>
+      </article>
+
+      <article class="project">
+        <div class="project__info">
+          <ul class="tags">
+            <li class="tag">Web</li>
+            <li class="tag">Сайт</li>
+            <li class="tag">Призер конкурса DAFES AWARDS’25</li>
+          </ul>
+          <div class="project__text">
+            <h2 class="project__title"><a href="#time">Дизайн сайта, посвященному <br>изучению феномена времени</a></h2>
+            <p class="project__desc">Для конкурса разработала экспериментальный лонгрид, исследующий концепцию времени и&nbsp;его непостоянство. Основной упор был сделан на&nbsp;типографику и&nbsp;анимации.</p>
+          </div>
+        </div>
+        <a class="project__media media--time" href="#time" aria-label="Сайт о феномене времени">
+          <div class="media__layers">
+            <img class="layer-art" src="assets/time-cover.jpg" alt="">
+          </div>
+        </a>
+      </article>
+    </section>
+
+    <section id="about" aria-labelledby="about-title">
+      <div class="section-head section-head--about">
+        <h2 class="section-head__title" id="about-title">О себе</h2>
+        <p class="section-head__desc">Уже 3 года в дизайне и с каждым годом все больше интереса к этому делу). Мне важно постоянно развиваться, поэтому я постоянно участвую в различных конкурсах. Это помогает смотреть на задачи под новым углом, быстро входить в незнакомый контекст и проверять свои решения в деле. Люблю сложные задачи, исследования и моменты, когда удаётся превратить хаос в понятный и удобный интерфейс. А в свободное время стараюсь проводить за встречами с друзьями и своими питомцами)</p>
+      </div>
+
+      <div class="photos">
+        <figure class="photo photo--pets"><img src="assets/about-pets.jpg" alt="Собака и кошка на диване" loading="lazy"></figure>
+        <figure class="photo photo--street"><img src="assets/about-street.jpg" alt="Ира на улице Санкт-Петербурга" loading="lazy"></figure>
+        <figure class="photo photo--portrait"><img src="assets/about-portrait.jpg" alt="Портрет Иры" loading="lazy"></figure>
+      </div>
+    </section>
+  </main>
+
+  <main data-page="2gis" id="2gis-page" hidden>
+    <section class="case-hero" aria-label="Концепции ИИ-ассистента по составлению маршрута для прогулок для 2ГИС">
+      <figure class="case-hero__media">
+        <img src="assets/2gis-hero.jpg" alt="Приложение 2ГИС с ИИ-ассистентом для прогулок на экране iPhone">
+      </figure>
+    </section>
+
+    <div class="case-body">
+      <section class="case-intro" aria-labelledby="case-title">
+        <ul class="tags">
+          <li class="tag">B2C</li>
+          <li class="tag">Mobile</li>
+          <li class="tag">Концепт</li>
+        </ul>
+        <h1 class="case-intro__title" id="case-title">Концепция ИИ-ассистента <br>по составлению маршрута <br>для прогулок для 2ГИС</h1>
+      </section>
+
+      <section class="case-head case-head--task" aria-labelledby="case-task-title">
+        <h2 class="case-head__title" id="case-task-title">Задача</h2>
+        <p class="case-head__desc">Разработать концепцию, как в приложение 2ГИС можно внедрить умного ИИ-ассистента, чтобы он мог закрывать определенную проблему пользователя</p>
+      </section>
+
+      <section class="case-cards" aria-label="Проблема и решение">
+        <article class="case-card">
+          <h2 class="case-card__title">Проблема</h2>
+          <p>Людям часто сложно самостоятельно планировать прогулки и встречи с друзьями: приходится тратить время на поиск интересных мест, продумывание маршрута и согласование планов. В результате спонтанные встречи превращаются в долгий процесс организации.</p>
+        </article>
+        <article class="case-card case-card--solution">
+          <h2 class="case-card__title">Решение</h2>
+          <ol>
+            <li>Собрать ИИ-ассистента, который мог бы помогать пользователям составлять и планировать маршруты для встреч с друзьями.</li>
+            <li>Добавить раздел, где будут на основе ИИ составляться рекомендательные и тематические подборки маршрутов, чтобы пользователи могли быстро определиться с выбором.</li>
+          </ol>
+        </article>
+      </section>
+
+      <section class="case-head" aria-labelledby="case-collections-title">
+        <h2 class="case-head__title" id="case-collections-title">Раздел с подборками</h2>
+        <p class="case-head__desc" style="--w:611px">Это дополнительный раздел приложения, полностью посвященный различным подборкам маршрутов. Здесь есть как и персональные подборки, так и тематические. За счет кроссервисности с другими продуктами Сбера получится собрать больше точечных данных, что позволит составлять более точные и актуальные подборки.</p>
+      </section>
+
+      <div class="case-pair">
+        <figure class="case-shot">
+          <div class="phone">
+            <div class="phone__screen"><img src="assets/2gis-screen-1.webp" width="444" height="961" alt="Экран приложения 2ГИС «Выбери, как провести свой идеальный день» с рекомендациями и тематическими подборками" loading="lazy" decoding="async"></div>
+            <img class="phone__bezel" src="assets/iphone-bezel.png" width="277" height="566" alt="" loading="lazy" decoding="async">
+          </div>
+        </figure>
+        <figure class="case-shot">
+          <div class="phone">
+            <div class="phone__screen"><img src="assets/2gis-screen-2.webp" width="444" height="961" alt="Экран «Рекомендации» с карточкой маршрута «Прогулка с кофе и булочками»" loading="lazy" decoding="async"></div>
+            <img class="phone__bezel" src="assets/iphone-bezel.png" width="277" height="566" alt="" loading="lazy" decoding="async">
+          </div>
+        </figure>
+      </div>
+
+      <section class="case-head" aria-labelledby="case-card-title">
+        <h2 class="case-head__title" id="case-card-title">Карточка маршрута</h2>
+        <p class="case-head__desc">В карточке каждого маршрута можно посмотреть расположение мест на карте, а также сколько примерно времени и бюджета понадобиться на этот маршрут. В более подробной версии можно также увидеть фотографии мест, их рейтинг и часы работы, а также при необходимости убрать некоторые места или добавить вместо них новые.</p>
+      </section>
+
+      <div class="case-pair">
+        <figure class="case-shot">
+          <div class="phone">
+            <div class="phone__screen"><img src="assets/2gis-screen-3.webp" width="444" height="961" alt="Карточка маршрута: места прогулки на карте, время и бюджет" loading="lazy" decoding="async"></div>
+            <img class="phone__bezel" src="assets/iphone-bezel.png" width="277" height="566" alt="" loading="lazy" decoding="async">
+          </div>
+        </figure>
+        <figure class="case-shot">
+          <div class="phone">
+            <div class="phone__screen"><img src="assets/2gis-screen-4.webp" width="444" height="961" alt="Подробная карточка маршрута с фотографией места и планом маршрута" loading="lazy" decoding="async"></div>
+            <img class="phone__bezel" src="assets/iphone-bezel.png" width="277" height="566" alt="" loading="lazy" decoding="async">
+          </div>
+        </figure>
+      </div>
+
+      <section class="case-head" aria-labelledby="case-nav-title">
+        <h2 class="case-head__title" id="case-nav-title">Навигация <br>во время маршрута</h2>
+        <p class="case-head__desc" style="--w:606px">Навигацию было решено перевести в панорамный формат, чтобы пользователям было легче найти дорогу, т.к. часто многим сложно понять и отсчитать, когда наступить тот самый поворот через 100 метров.</p>
+      </section>
+
+      <figure class="case-nav">
+        <img src="assets/2gis-nav.webp" width="2798" height="1866" alt="Панорамная навигация во время маршрута на экране iPhone в руке" loading="lazy" decoding="async">
+      </figure>
+
+      <section class="assistant" aria-label="ИИ-ассистент Маша">
+        <div class="assistant__visual">
+          <img class="assistant__mascot" src="assets/2gis-mascot.webp" width="610" height="604" alt="ИИ-ассистент Маша" loading="lazy" decoding="async">
+          <p class="assistant__bubble glass">Я&nbsp;— Маша, ИИ-ассистент, помогу разобраться с <em>твоими вопросами</em></p>
+        </div>
+        <p class="assistant__text">Помимо умных подборок также есть ИИ-ассистент, к которому всегда можно обратиться с вопросами в чате, который можно найти по иконке в верхней панели. </p>
+      </section>
+
+      <section class="case-demo" aria-label="Чат с ИИ-ассистентом">
+        <div class="case-demo__card">
+          <div class="phone">
+            <div class="phone__screen"><img src="assets/2gis-screen-5.webp" width="444" height="961" alt="Чат с ИИ-ассистентом Машей: подсказки с вопросами и поле ввода" loading="lazy" decoding="async"></div>
+            <img class="phone__bezel" src="assets/iphone-bezel.png" width="277" height="566" alt="" loading="lazy" decoding="async">
+          </div>
+          <div class="chips">
+            <p class="chip glass" style="--x:775;--y:135">Найди, куда можно пойти вкусно попить кофе</p>
+            <p class="chip glass" style="--x:728;--y:203">А что сейчас интересно есть в кино?</p>
+            <p class="chip glass" style="--x:260;--y:442">На какие выставки можно сходить в Манеж?</p>
+            <p class="chip glass" style="--x:212;--y:182">Куда сходить с друзьями?</p>
+            <p class="chip glass" style="--x:366;--y:238">Составь маршрут на выходной</p>
+            <p class="chip glass" style="--x:930;--y:374">Найди интересные места рядом</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <main data-page="warehouse" id="warehouse-page" hidden>
+    <div class="case-warehouse">
+      <section class="case-hero case-hero--warehouse" aria-label="Дизайн страницы списания материалов со склада для мед.учреждения">
+        <figure class="case-hero__media">
+          <img src="assets/macbook-office.jpg" width="2234" height="1489" alt="Макет «Новое списание» на экране ноутбука: склад, причина и кабинет-получатель">
+        </figure>
+      </section>
+
+      <div class="case-body case-body--warehouse">
+        <section class="case-intro case-intro--warehouse" aria-labelledby="warehouse-title">
+          <ul class="tags">
+            <li class="tag">B2B</li>
+            <li class="tag">Mobile</li>
+            <li class="tag">Desktop</li>
+          </ul>
+          <h1 class="case-intro__title" id="warehouse-title">Дизайн страницы списания материалов со склада <br>для мед.учреждения</h1>
+        </section>
+
+        <section class="wh-split wh-split--context" aria-labelledby="warehouse-context-title">
+          <h2 class="wh-split__title" id="warehouse-context-title">Контекст</h2>
+          <p class="wh-split__text">Я работала над системой управления складом медицинского центра. Основной сценарий&nbsp;— списание материалов в кабинет, на утилизацию, по сроку годности, бою или порче.</p>
+        </section>
+
+        <section class="wh-roles" aria-label="Проблема и роли">
+          <article class="case-card wh-card wh-problem">
+            <h2 class="case-card__title">Проблема</h2>
+            <p>Необходимо сделать списание быстрым и удобным, но при этом обеспечить контроль учётных материалов и прозрачность расходов.</p>
+          </article>
+          <div class="wh-roles__list">
+            <article class="case-card case-card--solution wh-card">
+              <h2 class="case-card__title">Кладовщик</h2>
+              <p>Списывает материалы в течение дня, часто с мобильного устройства. Ему важно делать это быстро, поэтому он объединяет списания с разными причинами в один документ и выбирает «Прочее».</p>
+            </article>
+            <article class="case-card case-card--solution wh-card">
+              <h2 class="case-card__title">Старшая медсестра</h2>
+              <p>Отвечает за учётные материалы и должна контролировать их списание: с указанием причины и номера серии, только с её ведома.</p>
+            </article>
+            <article class="case-card case-card--solution wh-card">
+              <h2 class="case-card__title">Бухгалтер</h2>
+              <p>Анализирует списания раз в месяц. Ему нужны понятные причины, чтобы правильно распределять расходы.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="warehouse-logic-title">
+          <h2 class="wh-split__title" id="warehouse-logic-title">Бизнес-логика</h2>
+          <p class="wh-split__text" style="--w:562px">Списание выполняется только с одного склада. Материалы добавляются поиском по названию, артикулу или сканом штрихкода. Для каждого указывается количество; списать больше остатка нельзя.</p>
+        </section>
+
+        <section class="wh-logic" aria-label="Правила списания">
+          <div class="wh-logic__list">
+            <article class="case-card case-card--solution wh-card wh-logic-card">
+              <h2 class="case-card__title">Причина списания одна на документ</h2>
+              <p>Выдача в кабинет, срок годности, бой и порча, утилизация или прочее. При выдаче указывается кабинет-получатель.</p>
+            </article>
+            <article class="case-card case-card--solution wh-card wh-logic-card">
+              <h2 class="case-card__title">Учетные материалы</h2>
+              <p>Для учётных материалов запрещено списание по причине «Прочее». Всегда обязательны номер серии и комментарий. При списании из-за боя, порчи или утилизации требуется подтверждение старшей медсестры.</p>
+            </article>
+            <article class="case-card case-card--solution wh-card wh-logic-card">
+              <h2 class="case-card__title">Ограничения остатков</h2>
+              <p>Нельзя списать больше доступного количества или опуститься ниже неснижаемого остатка. Исключение — просроченные материалы: их необходимо списать в день обнаружения.</p>
+            </article>
+            <article class="case-card case-card--solution wh-card wh-logic-card">
+              <h2 class="case-card__title">Редактирование документа</h2>
+              <p>После проведения документ нельзя редактировать. Его можно только целиком отменить в тот же день; для отмены списания учётных материалов требуется подтверждение старшей медсестры.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="warehouse-task-title">
+          <h2 class="wh-split__title" id="warehouse-task-title">Задача</h2>
+          <div class="wh-split__text wh-task" style="--w:562px">
+            <p>Необходимо было отрисовать три экрана сценария списания:</p>
+            <ul>
+              <li>• Форма списания — склад, материалы, количества, причины. Десктоп.</li>
+              <li>• Подтверждение — сводка перед проведением документа. Десктоп.</li>
+              <li>• Быстрое списание с терминала — кладовщик в подсобке списывает одну-две позиции прямо у полки. Мобильный.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="warehouse-empty-title">
+          <h2 class="wh-split__title" id="warehouse-empty-title">Форма списания (пустая таблица)</h2>
+          <p class="wh-split__text" style="--w:618px">На страртовой странице пользователю предлагается выбрать причину и добавить материал. Выбор склада не активен, т.к. в этом случае у организации он только один. Если складов будет несколько, то выбор будет доступен. Так получается, что интерфейс не нужно менять в зависимости от того один или много складов, и при этом в случае, если он один, пользователь не тратить время на этот шаг, а также убирается пункт в котором пользователь может совершить ошибку.</p>
+        </section>
+
+        <figure class="wh-shot">
+          <div class="wh-shot__card">
+            <img src="assets/warehouse-empty.jpg" width="1762" height="1206" alt="Пустая форма «Новое списание»: склад недоступен, причина не выбрана, в документе пока нет материалов" loading="lazy" decoding="async">
+          </div>
+        </figure>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="warehouse-table-title">
+          <h2 class="wh-split__title" id="warehouse-table-title">Форма списания (рабочий документ)</h2>
+          <div class="wh-split__text" style="--w:618px">
+            <p>В таблице с добавленными материалами было решено дефолтно показывать только верхную часть таблицы, а остальное скрыть и показывать по желанию пользователя. На будущее стоит дополнительно изучить контекст ситуации, чтобы понять насколько детально просматриваются эти документы и определить нужна ли здесь фильтрация (Например, по названию и количеству списанных единиц). Также внизу выводим общее количество всех позиций и сколько из них учетных.</p>
+            <p class="wh-split__more">Дополнительно в таблице автоматически указывается, сколько единиц материала осталось на складе и какой минимальный остаток у этого материала. Так сразу будет подсвечиваться с какими материалами может быть проблемы при отправки документа. (Подробнее про проблему списания при достижении минимального остатка будет рассказано дальше в разделе с окном подтверждения.</p>
+          </div>
+        </section>
+
+        <figure class="wh-shot">
+          <div class="wh-shot__card">
+            <img src="assets/warehouse-table.jpg" width="1762" height="1206" alt="Рабочий документ «Новое списание»: шесть позиций в таблице, остатки, кнопка «Показать все» и активная кнопка «Провести»" loading="lazy" decoding="async">
+          </div>
+        </figure>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="warehouse-error-title">
+          <h2 class="wh-split__title" id="warehouse-error-title">Форма списания (ошибка)</h2>
+          <p class="wh-split__text" style="--w:618px">Если в заполнении формы есть ошибки, то при нажатии кнопки «Провести» будут подсвечены места ошибок и добавлен текст о том, что именно не так заполнено. При этом пока ошибки не будут устранены, кнопка «Провести» остается неактивной.</p>
+        </section>
+
+        <figure class="wh-shot">
+          <div class="wh-shot__card">
+            <img src="assets/warehouse-error.jpg" width="1762" height="1206" alt="Форма «Новое списание» с ошибками: пустые серия и комментарий подсвечены, кнопка «Провести» неактивна" loading="lazy" decoding="async">
+          </div>
+        </figure>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="warehouse-confirm-title">
+          <h2 class="wh-split__title" id="warehouse-confirm-title">Экран подтверждения</h2>
+          <p class="wh-split__text" style="--w:618px">На экране подтверждения выводится основная информация по документу. При этом если были добавлены учетные материалы, а причина была выбрана «Прочее», то программа не обязывает к повторному заполнению документа, а предлагает провести все обычные материалы, а учетные сформировать в отдельный документ и отправить на согласование старшой медсестре. При этом пользователю будет показан текст с дальнейшими действиями при таком раскладе.</p>
+        </section>
+
+        <figure class="wh-shot">
+          <div class="wh-shot__card">
+            <img src="assets/warehouse-confirm.jpg" width="1762" height="1206" alt="Окно «Проверьте данные»: учётный материал нельзя списать как «Прочее», обычные позиции проводятся отдельно" loading="lazy" decoding="async">
+          </div>
+        </figure>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="warehouse-mobile-title">
+          <h2 class="wh-split__title" id="warehouse-mobile-title">Мобильный сценарий</h2>
+          <p class="wh-split__text" style="--w:603px">Принцип работы сохраняется, однако упрощяется интерфейс, чтобы была возможность сделать крупные элементы, что облегчило бы заполнение формы одной рукой. Также в этом сценарии предусматривается только сканирование товаров, т.к. именно этим занимается кладовщик, для которого предназначена эта версия.</p>
+        </section>
+
+        <section class="wh-logic" aria-label="Принципы мобильного сценария">
+          <div class="wh-logic__list">
+            <article class="case-card case-card--solution wh-card wh-logic-card">
+              <h2 class="case-card__title">Одна страница = один материал</h2>
+              <p>Этот принцип помогает избежать усложнения верстки. И тогда внизу на экране доступно две кнопки, одна из них предлагает добавить материал и потом продолжить добавление других материалов в документ, а по другой можно сразу провести весь документ.</p>
+            </article>
+            <article class="case-card case-card--solution wh-card wh-logic-card">
+              <h2 class="case-card__title">Добавление серии</h2>
+              <p>В ситуации, когда кладовщик должен заполнить эту форму одной рукой и при этом она должны быть простой в заполнении учетных материалов, чтобы обходные пути не казались легче, делать поле для ручного заполнения серии материала не целесообразно, т.к. это неудобно и занимает много времени. Предложено альтернативное решение, где нужно будет прикрепить фотографию серии материала и дальше простая модель OCR могла бы автоматически его распознавать и добавлять в документ. Также этот способ удобен в случае того, если серия на материале нечитаема.</p>
+            </article>
+          </div>
+        </section>
+
+        <figure class="wh-shot">
+          <div class="wh-shot__card wh-shot__card--phones">
+            <img src="assets/warehouse-phones.jpg" width="1717" height="1133" alt="Три экрана мобильного списания: пустой документ, выбор количества и причины, фотография серии учётного материала" loading="lazy" decoding="async">
+          </div>
+        </figure>
+      </div>
+    </div>
+  </main>
+
+  <main data-page="decode" id="decode-page" hidden>
+    <div class="case-decode">
+      <section class="case-hero case-hero--decode" aria-label="Decode — приложение для изучения языков програмирования">
+        <figure class="case-hero__media">
+          <img src="assets/decode-hero.jpg" width="2800" height="1266" alt="Экраны приложения Decode на синем фоне: прогресс, проверка кода и уведомления о рекордах">
+        </figure>
+      </section>
+
+      <div class="case-body case-body--decode">
+        <section class="case-intro case-intro--warehouse case-intro--decode" aria-labelledby="decode-title">
+          <ul class="tags">
+            <li class="tag">B2C</li>
+            <li class="tag">Mobile</li>
+          </ul>
+          <h1 class="case-intro__title" id="decode-title">Decode&nbsp;— приложение <br>для изучения языков програмирования</h1>
+        </section>
+
+        <section class="wh-split wh-split--context" aria-labelledby="decode-context-title">
+          <h2 class="wh-split__title" id="decode-context-title">Контекст</h2>
+          <p class="wh-split__text" style="--w:648px">Проект посвящен созданию UX/UI дизайна для мобильного приложения по изучению языков программирования в рамках учебного проекта. Здесь необходимо было изучить уже существующие решения и выявить их недостатки, поскольку действительно удобных приложений на данный момент нет, а также продумать дизайн интерфейса.</p>
+        </section>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="decode-problem-title">
+          <h2 class="wh-split__title" id="decode-problem-title">Проблема</h2>
+          <p class="wh-split__text" style="--w:648px">Основой изучения языков програмирования является собственоручное написание кода. Именно этот процесс абсолютно неадаптирован под мобильные устройства.</p>
+        </section>
+
+        <section class="case-cards dc-problems" aria-label="Проблемы написания кода на телефоне">
+          <article class="case-card">
+            <h2 class="case-card__title">Отсутствие подсказок при написании</h2>
+            <p>В десктопных редакторах кода предусмотрены подсказки по функциям и методам, которые ускоряют работу и избавляют от необходимости обращаться к сторонним сервисам. В мобильной версии такой возможности нет, что усложняет обучение и поиск нужных решений.</p>
+          </article>
+          <article class="case-card case-card--solution">
+            <h2 class="case-card__title">Не адаптированная клавиатура</h2>
+            <p>У всех изученных конкурентов при написании кода в мобильной версии используется стандартная клавиатура телефона. Из-за обилия дополнительных символов пользователю приходится постоянно переключаться между раскладками. Решением могла бы стать специализированная клавиатура, заменяющая стандартную, как, например, в сервисах Яндекса.</p>
+          </article>
+        </section>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="decode-solution-title">
+          <h2 class="wh-split__title" id="decode-solution-title">Решение</h2>
+          <p class="wh-split__text" style="--w:648px">Решение — внесение корректировок в клавиатуру приложения, добавление автоматических подсказок при написании кода, а также включение встроенной документации</p>
+        </section>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="decode-insights-title">
+          <h2 class="wh-split__title" id="decode-insights-title">Инсайты</h2>
+          <ol class="dc-insights">
+            <li>ЦА делится на две группы: те, кому нужны курсы с нуля и те, кому, наоборот, нужны очень углубленные курсы</li>
+            <li>Самая частая проблема в онлайн-обучении — это найти время для занятий и не забыть про них</li>
+            <li>Не хватает интерактивных чекапов</li>
+            <li>Мало бесплатных и русифицированных приложений для изучения</li>
+            <li>Самым полезным в обучении стало практика в написании кода, но на телефоне это делать крайне неудобно, т.к. приходится постоянно переключаться между раскладками на клавиатуре</li>
+          </ol>
+        </section>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="decode-competitors-title">
+          <h2 class="wh-split__title" id="decode-competitors-title">Конкуренты</h2>
+          <div class="dc-comp">
+            <article class="case-card case-card--solution dc-comp__card">
+              <h2 class="case-card__title">Mimi pro</h2>
+              <div class="dc-proscons">
+                <div class="dc-pair dc-pair--plus">
+                  <p>Плюсы</p>
+                  <ol class="dc-ol--mimi">
+                    <li>подбор курсов под уровень навыков</li>
+                    <li>напоминания о занятии</li>
+                    <li>ии помощник</li>
+                  </ol>
+                </div>
+                <div class="dc-pair">
+                  <p>Минусы</p>
+                  <ol>
+                    <li>нет документации</li>
+                    <li>стандартная клавиатура</li>
+                    <li>полностью платный</li>
+                  </ol>
+                </div>
+              </div>
+            </article>
+            <article class="case-card case-card--solution dc-comp__card">
+              <h2 class="case-card__title">Enki</h2>
+              <div class="dc-proscons">
+                <div class="dc-pair dc-pair--plus">
+                  <p>Плюсы</p>
+                  <ol class="dc-ol--enki">
+                    <li>много языков</li>
+                    <li>подсраивается под уровень навыков</li>
+                    <li>разные варианты практики</li>
+                  </ol>
+                </div>
+                <div class="dc-pair">
+                  <p>Минусы</p>
+                  <ol>
+                    <li>нет подсказки при печати, нет документации</li>
+                    <li>нет практики написания кода вручную</li>
+                    <li>стандартная клавиатура</li>
+                  </ol>
+                </div>
+              </div>
+            </article>
+            <article class="case-card case-card--solution dc-comp__card">
+              <h2 class="case-card__title">Stepik</h2>
+              <div class="dc-proscons">
+                <div class="dc-pair dc-pair--plus">
+                  <p>Плюсы</p>
+                  <ol>
+                    <li>хорошая теория</li>
+                    <li>много бесплатных курсов</li>
+                    <li>доступность</li>
+                  </ol>
+                </div>
+                <div class="dc-pair">
+                  <p>Минусы</p>
+                  <ol>
+                    <li>нет подсказки при печати</li>
+                    <li>стандартная клавиатура</li>
+                    <li>трудно выбрать подходящий курс</li>
+                  </ol>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="decode-flow-title">
+          <h2 class="wh-split__title" id="decode-flow-title">Userflow</h2>
+          <p class="wh-split__text" style="--w:592px">Нужно было составить понятный пользовательский путь, т.к. хотелось помимо функционала изучения курсов включить функции тренинга прогресса, пройденных курсов и рекомендаций к новым.</p>
+        </section>
+
+        <figure class="dc-flow">
+          <div class="dc-flow__card">
+            <img src="assets/decode-flow.jpg" width="2272" height="1118" alt="Пользовательский путь Decode: регистрация, курсы, уроки, практика и профиль" loading="lazy" decoding="async">
+          </div>
+        </figure>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="decode-design-title">
+          <h2 class="wh-split__title" id="decode-design-title">Дизайн</h2>
+          <p class="wh-split__text" style="--w:624px">Также нужно было продумать как в дизайн интерфейса можно интегрировать метафору, связанную с программированием, при этом не нарушая легкость его восприятия. Я решила сосредоточится на модульности, что отсылало бы к формату организации информации в языках программирования, а для заголовков использовать символы начала вводимого в интерпретатор кода, который используется для объяснения кода.</p>
+        </section>
+
+        <div class="dc-showcase">
+          <figure class="dc-splash">
+            <img src="assets/decode-splash.jpg" width="2800" height="1261" alt="Обложка приложения: логотип decode, слоган и экраны прогресса и проверки кода" loading="lazy" decoding="async">
+          </figure>
+          <div class="dc-shots">
+            <img src="assets/decode-progress.jpg" width="1388" height="748" alt="Экран «Мой прогресс»: дни без перерыва, решённые задачи и рекомендации курсов" loading="lazy" decoding="async">
+            <img src="assets/decode-languages.jpg" width="1385" height="739" alt="Подборка курсов: Java, Python, SQL, Swift, HTML и C++" loading="lazy" decoding="async">
+          </div>
+          <div class="dc-shots">
+            <img src="assets/decode-practice.jpg" width="1388" height="746" alt="Практика в приложении: клавиатура для кода и отправка решения на проверку" loading="lazy" decoding="async">
+            <img src="assets/decode-team.jpg" width="1385" height="746" alt="Экран «Присоединяйся к decode team» со списком курсов" loading="lazy" decoding="async">
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <main data-page="brusnitsyn" id="brusnitsyn-page" hidden>
+    <div class="case-brus">
+      <section class="case-hero case-hero--brus" aria-label="Дизайн сайта для выставки культурного квартала «Брусницын»">
+        <figure class="case-hero__media">
+          <img src="assets/brus-hero.jpg" width="2800" height="1322" alt="Сайт «Астарта» на экране ноутбука: яхта братьев Брусницыных">
+        </figure>
+      </section>
+
+      <div class="case-body case-body--brus">
+        <section class="case-intro case-intro--warehouse case-intro--decode" aria-labelledby="brus-title">
+          <ul class="tags">
+            <li class="tag">B2С</li>
+            <li class="tag">Mobile</li>
+            <li class="tag">Desktop</li>
+            <li class="tag">Сайт</li>
+          </ul>
+          <h1 class="case-intro__title" id="brus-title">Дизайн сайта для выставки культурного квартала «Брусницын»</h1>
+        </section>
+
+        <section class="wh-split wh-split--context" aria-labelledby="brus-about-title">
+          <h2 class="wh-split__title" id="brus-about-title">О проекте</h2>
+          <p class="wh-split__text" style="--w:648px">Этот проект&nbsp;— результат моей работы в&nbsp;креативных лабораторий «Брусницына» во&nbsp;время совместной разработки с&nbsp;другими участниками выставки «Доброе дело веками помнится», проходившей 8–9&nbsp;ноября 2025&nbsp;года. Основной задачей выставки было познакомить посетителей с&nbsp;историей жизни братьев Брусницыных, на&nbsp;территории которых сейчас находится культурный квартал и&nbsp;деятельность которых положило начало для него. В&nbsp;рамках проекта каждая команда участников занималась разработкой материала по&nbsp;отдельным крупным разделам в&nbsp;жизни Брусницыных. Моя команда работала с&nbsp;материалами по&nbsp;«Астарте»&nbsp;— яхте А.&nbsp;Н.&nbsp;Брусницына, которая была им&nbsp;буквально отбита у&nbsp;шведского принца.</p>
+        </section>
+
+        <figure class="bz-photos">
+          <div class="bz-photos__row">
+            <img src="assets/brus-photo-1.jpg" width="1152" height="768" alt="Модель яхты и брошюры на столе выставки" loading="lazy" decoding="async">
+            <img src="assets/brus-photo-2.jpg" width="900" height="600" alt="Участницы выставки с моделью яхты" loading="lazy" decoding="async">
+            <img src="assets/brus-photo-3.jpg" width="900" height="600" alt="Посетители у экспозиции выставки" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Фотографии с выставки «Доброе дело веками помнится»</figcaption>
+        </figure>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="brus-task-title">
+          <h2 class="wh-split__title" id="brus-task-title">Задача</h2>
+          <p class="wh-split__text" style="--w:602px">Моей основной работой было создание сайта лонгрида, который&nbsp;бы смог интересно рассказать об&nbsp;истории яхты и&nbsp;при этом&nbsp;бы органично вписался в&nbsp;уже существующую дизайн-систему культурного квартала</p>
+        </section>
+
+        <figure class="bz-screen">
+          <div class="bz-screen__card">
+            <img src="assets/brus-screen.jpg" width="1842" height="1098" alt="Главный экран сайта «Астарта» яхта братьев Брусницыных" loading="lazy" decoding="async">
+          </div>
+        </figure>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="brus-archive-title">
+          <h2 class="wh-split__title" id="brus-archive-title">Работа с архивными <br>материалами</h2>
+          <p class="wh-split__text" style="--w:602px">Однако при работе с&nbsp;обнаружена серьезная проблема с&nbsp;изобразительным материалом. Все имеющиеся фотографии яхты были выполнены в&nbsp;плохом качестве, у&nbsp;них часто было обрезано около четверти изображения. Такая ситуация сложилась из-за того, что все существующие фотографии находятся либо в&nbsp;личных, либо в&nbsp;военно-морских архивах, где нет цифровой каталогизации, и&nbsp;поэтому в&nbsp;итоге было необходимо заняться реставрацией цифровых версий фотографий. С&nbsp;помощью ИИ-инструментов и&nbsp;на&nbsp;базе других существующих фотографий братьев Брусницыных у&nbsp;меня получилось восстановить все изображения до&nbsp;хорошего качества.</p>
+        </section>
+
+        <div class="bz-shots">
+          <div class="bz-pair">
+            <div class="bz-mini">
+              <img src="assets/brus-shot-a.jpg" width="1084" height="646" alt="Страница сайта с восстановленной фотографией гавани и яхты" loading="lazy" decoding="async">
+            </div>
+            <div class="bz-mini">
+              <img src="assets/brus-shot-b.jpg" width="1084" height="646" alt="Страница сайта с архивной чёрно-белой фотографией" loading="lazy" decoding="async">
+            </div>
+          </div>
+          <figure class="bz-screen">
+            <div class="bz-screen__card bz-screen__card--wide">
+              <img src="assets/brus-shot-wide.jpg" width="1840" height="1086" alt="Страница сайта с крупной чёрно-белой фотографией яхты «Астарта»" loading="lazy" decoding="async">
+            </div>
+          </figure>
+        </div>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="brus-style-title">
+          <h2 class="wh-split__title" id="brus-style-title">Визуальный стиль</h2>
+          <p class="wh-split__text" style="--w:602px">Однако при работе с&nbsp;обнаружена серьезная проблема с&nbsp;изобразительным материалом. Все имеющиеся фотографии яхты были выполнены в&nbsp;плохом качестве, у&nbsp;них часто было обрезано около четверти изображения. Такая ситуация сложилась из-за того, что все существующие фотографии находятся либо в&nbsp;личных, либо в&nbsp;военно-морских архивах, где нет цифровой каталогизации, и&nbsp;поэтому в&nbsp;итоге было необходимо заняться реставрацией цифровых версий фотографий. С&nbsp;помощью ИИ-инструментов и&nbsp;на&nbsp;базе других существующих фотографий братьев Брусницыных у&nbsp;меня получилось восстановить все изображения до&nbsp;хорошего качества.</p>
+        </section>
+
+        <figure class="bz-guide">
+          <img src="assets/brus-guide.jpg" width="2882" height="1346" alt="Гайдлайны существующего стиля: логотип, цвета и шрифты культурного квартала" loading="lazy" decoding="async">
+        </figure>
+
+        <div class="bz-shots bz-shots--follow">
+          <figure class="bz-screen">
+            <div class="bz-screen__card">
+              <img src="assets/brus-shot-story.jpg" width="1842" height="1098" alt="Интерактивный фрагмент вахтенного журнала на фиолетовом фоне" loading="lazy" decoding="async">
+            </div>
+          </figure>
+          <div class="bz-pair">
+            <div class="bz-mini">
+              <img src="assets/brus-shot-c.jpg" width="1084" height="646" alt="Текстовая страница лонгрида об истории яхты" loading="lazy" decoding="async">
+            </div>
+            <div class="bz-mini">
+              <img src="assets/brus-shot-d.jpg" width="1084" height="646" alt="Страница с фиолетовыми блоками истории и фотографией" loading="lazy" decoding="async">
+            </div>
+          </div>
+        </div>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="brus-motion-title">
+          <h2 class="wh-split__title" id="brus-motion-title">Анимации</h2>
+          <p class="wh-split__text" style="--w:602px">В&nbsp;лонгриде еще было решено создать интерактивную часть с&nbsp;анимацией записей с&nbsp;вахтенного журнала последнего плавания «Астарты». Так как все записи короткие, не&nbsp;хотелось подавать их&nbsp;одним слитным текстом, а, наоборот, постараться передать ощущение сепарированности этих записей и&nbsp;то, как на&nbsp;кораблях такая короткая коммуникация редко осуществляется.</p>
+        </section>
+
+        <figure class="bz-screen">
+          <div class="bz-screen__card bz-screen__card--920">
+            <img src="assets/brus-shot-anim.jpg" width="1840" height="1098" alt="Анимированная сцена: яхта «Астарта» в открытом море" loading="lazy" decoding="async">
+          </div>
+        </figure>
+      </div>
+    </div>
+  </main>
+
+  <main data-page="tbiz" id="tbiz-page" hidden>
+    <div class="case-tbiz">
+      <section class="case-hero case-hero--tbiz" aria-label="Дизайн презентаций для Т-Бизнеса">
+        <figure class="case-hero__media">
+          <img src="assets/tbiz-hero.jpg" width="2798" height="1322" alt="Обложка презентации «Все о кредитах для бизнеса»">
+        </figure>
+      </section>
+
+      <div class="case-body case-body--tbiz">
+        <section class="wh-split wh-split--context" aria-labelledby="tbiz-about-title">
+          <h2 class="wh-split__title" id="tbiz-about-title">О проекте</h2>
+          <div class="tb-copy">
+            <p>Создавала презентации и инфографику для различных суббрендов Т-Банка: продуктовые материалы и презентации для выступлений. Подбирала оформление под задачу, разрабатывала креативные шаблонные слайды, генерировала 3D-иллюстрации и занималась их обработкой. Подготовила более 386 слайдов, часть из которых переиспользовалась командой, что помогло сократить общее время работы и автоматизировать часть задач.</p>
+            <p class="tb-note">*В работах убраны некоторые числа и имена по требованию компании о неразгалшении этой информации.</p>
+            <p class="tb-note">** Вся информация не является публичной офертой. Все указанные лимиты и сроки рассмотрения актуальны на сентябрь 2026 года.</p>
+          </div>
+        </section>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="tbiz-product-title">
+          <h2 class="wh-split__title" id="tbiz-product-title">Продуктовые <br>презентации</h2>
+          <p class="wh-split__text" style="--w:589px">Занималась созданием продуктовых презентаций и бизнес-отчетов в соответствии с гайдлайнами. Дополнительной задачей было пересмотреть как в рамках случившегося редизайна и нового яркого стиля с нестандартными решениями оформлять продуктовые презентаций, в которых требовалась сохранить сдержанность.</p>
+        </section>
+
+        <div class="tb-slides">
+          <div class="tb-slides__row">
+            <img src="assets/tbiz-slide-1.jpg" width="1000" height="564" alt="Слайд «Продвигайте свой бизнес среди клиентов Т-Банка»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-slide-2.jpg" width="1000" height="564" alt="Слайд «Витрина B2B-предложений»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-slide-3.jpg" width="1000" height="564" alt="Слайд «Целевая аудитория»" loading="lazy" decoding="async">
+          </div>
+          <div class="tb-slides__row">
+            <img src="assets/tbiz-slide-4.jpg" width="1000" height="564" alt="Слайд «Данные по воронке»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-slide-5.jpg" width="1000" height="564" alt="Слайд «Условия размещения»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-slide-6.jpg" width="1000" height="564" alt="Слайд «Кейсы и результаты»" loading="lazy" decoding="async">
+          </div>
+        </div>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="tbiz-talk-title">
+          <h2 class="wh-split__title" id="tbiz-talk-title">Продуктовые <br>для выступлений</h2>
+          <p class="wh-split__text" style="--w:589px">В презентациях на выступлениях, наоборот, необходимо было максимально привнести все экспериментальные черты стиля, чтобы сделать слайды более цепляющими и за счет этого больше привлечь внимание аудитории.</p>
+        </section>
+
+        <div class="tb-talk">
+          <img src="assets/tbiz-talk-1.jpg" width="2800" height="1578" alt="Слайд «Инструменты торгового финансирования для бизнеса»" loading="lazy" decoding="async">
+          <div class="tb-talk__pair">
+            <img src="assets/tbiz-talk-2.jpg" width="1500" height="845" alt="Слайд «ЦФА — это финансовые права в цифровом формате»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-talk-3.jpg" width="1500" height="845" alt="Слайд «Условия кредитования среднего бизнеса в Т-Банке»" loading="lazy" decoding="async">
+          </div>
+          <img src="assets/tbiz-talk-4.jpg" width="2800" height="1578" alt="Слайд «Оформляем банковские гарантии в удобном вам формате»" loading="lazy" decoding="async">
+          <div class="tb-talk__pair">
+            <img src="assets/tbiz-talk-5.jpg" width="1500" height="845" alt="Слайд «Аккредитив — инструмент для безопасных расчетов между продавцом и покупателем»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-talk-6.jpg" width="1500" height="845" alt="Слайд «Шаги для увеличения размера кредита»" loading="lazy" decoding="async">
+          </div>
+        </div>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="tbiz-info-title">
+          <h2 class="wh-split__title" id="tbiz-info-title">Инфографика</h2>
+          <p class="wh-split__text" style="--w:589px">Другим блоком задач было создание графиков и инфографики, а также их макетов для дальнейшего использования. Важно было не уходить в блочную верстку с набором пунктов, а стараться максимально внедрять инфографику и за счет этого разнообразить ритм презентации, что поможет не потерять внимание зрителя.</p>
+        </section>
+
+        <div class="tb-charts">
+          <img src="assets/tbiz-info-1.jpg" width="2800" height="1578" alt="Слайд «В Т-Банке доступно два вида аккредитивов»" loading="lazy" decoding="async">
+          <div class="tb-charts__pair">
+            <img src="assets/tbiz-info-2.jpg" width="1500" height="845" alt="Слайд «Как Т-Банк кредитует бизнес по отраслям»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-info-3.jpg" width="1500" height="845" alt="Слайд «Объем рынка долговых ЦФА и количество выпусков в обращении растут»" loading="lazy" decoding="async">
+          </div>
+        </div>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="tbiz-3d-title">
+          <h2 class="wh-split__title" id="tbiz-3d-title">Создание <br>и обработка 3D</h2>
+          <p class="wh-split__text" style="--w:589px">В гайдлайнах была предусмотрена обработка фотографий и 3D иллюстраций с помощью моушн блюра. Я занималась изучением, как можно этот процесс унифицировать в фигме, чтобы при работе не ходить в дополнительную программу и затем обучала этому методу остальную команду</p>
+        </section>
+
+        <div class="tb-covers">
+          <img src="assets/tbiz-3d-1.jpg" width="1240" height="1755" alt="Обложка «Кредитная линия на исполнение контракта»" loading="lazy" decoding="async">
+          <img src="assets/tbiz-3d-2.jpg" width="1240" height="1755" alt="Обложка «Прием платежей через смартфон с Pay to phone»" loading="lazy" decoding="async">
+          <img src="assets/tbiz-3d-3.jpg" width="1240" height="1755" alt="Обложка «Инвестиционная кредитная линия в Т-Банке»" loading="lazy" decoding="async">
+        </div>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="tbiz-offers-title">
+          <h2 class="wh-split__title" id="tbiz-offers-title">Коммерческие предложения</h2>
+        </section>
+
+        <div class="tb-offers">
+          <div class="tb-offers__row">
+            <img src="assets/tbiz-offer-1.jpg" width="1240" height="1755" alt="Страница «Выгодные инвестиции в бизнес»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-offer-2.jpg" width="1240" height="1755" alt="Страница «Под залог жилой и коммерческой недвижимости»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-offer-3.jpg" width="1240" height="1755" alt="Страница «Пользовательские роли в Pay to phone»" loading="lazy" decoding="async">
+          </div>
+          <div class="tb-offers__row">
+            <img src="assets/tbiz-offer-4.jpg" width="1240" height="1755" alt="Страница «Что нужно для работы с Pay to phone»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-offer-5.jpg" width="1240" height="1755" alt="Страница «Регистрация ИП без визитов в налоговую»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-offer-6.jpg" width="1240" height="1755" alt="Страница «Индивидуальная настройка платежей»" loading="lazy" decoding="async">
+          </div>
+        </div>
+
+        <section class="wh-split wh-split--logic" aria-labelledby="tbiz-brand-title">
+          <h2 class="wh-split__title" id="tbiz-brand-title">Работа с разными <br>суббрендами</h2>
+          <p class="wh-split__text" style="--w:632px">Дополнительно работала со стилем суббренда Т-Цифры, который изначально еще не был до конца собранным, поэтому помогала с поисками новых визуальных решений в нем и том, как в текущую 2D версию можно органично внедрить абстрактные 3D элементы.</p>
+        </section>
+
+        <div class="tb-brand">
+          <div class="tb-brand__pair">
+            <img class="tb-brand__edge" src="assets/tbiz-brand-1.jpg" width="1500" height="846" alt="Слайд «Речевая аналитика офлайн-коммуникаций»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-brand-2.jpg" width="1500" height="846" alt="Слайд «Зачем бизнесу речевая аналитика»" loading="lazy" decoding="async">
+          </div>
+          <img class="tb-brand__wide" src="assets/tbiz-brand-3.jpg" width="2800" height="1579" alt="Слайд «Экосистема из пяти инструментов на базе речевых технологий»" loading="lazy" decoding="async">
+          <div class="tb-brand__pair">
+            <img src="assets/tbiz-brand-4.jpg" width="1500" height="846" alt="Слайд «Проблемные точки, на которые стоит обратить внимание в первую очередь»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-brand-5.jpg" width="1500" height="846" alt="Слайд «Когда нужна речевая аналитика для офлайн-точек»" loading="lazy" decoding="async">
+          </div>
+          <div class="tb-brand__pair">
+            <img src="assets/tbiz-brand-6.jpg" width="1500" height="846" alt="Слайд «Влияет на LTV, потому что отвечает на главные вопросы бизнеса»" loading="lazy" decoding="async">
+            <img src="assets/tbiz-brand-7.jpg" width="1500" height="846" alt="Слайд «VoiceKit определяет, кому из спикеров принадлежит каждая реплика»" loading="lazy" decoding="async">
+          </div>
+          <img class="tb-brand__wide" src="assets/tbiz-brand-8.jpg" width="2800" height="1579" alt="Слайд «Как работает Insights»" loading="lazy" decoding="async">
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <main data-page="time" id="time-page" hidden>
+    <div class="case-time">
+      <div class="case-body case-body--time">
+        <div class="time-screen">
+          <div class="time-browser">
+            <div class="time-browser__shot">
+              <img src="assets/time-page.jpg" width="1800" height="1125" alt="Главный экран лонгрида «Как мы изобрели время?»">
+            </div>
+            <img class="time-browser__nav" src="assets/time-nav.png" width="1700" height="48" alt="">
+            <div class="time-browser__blank" aria-hidden="true"></div>
+            <div class="time-browser__logo" aria-hidden="true">
+              <img src="assets/time-page.jpg" alt="">
+            </div>
+          </div>
+        </div>
+
+        <section class="time-intro" aria-labelledby="time-title">
+          <ul class="tags">
+            <li class="tag">Web</li>
+            <li class="tag">Сайт</li>
+            <li class="tag">Призер конкурса DAFES AWARDS’25</li>
+          </ul>
+          <h1 class="time-intro__title" id="time-title">Дизайн сайта, посвященному <br>изучению феномена времени</h1>
+        </section>
+
+        <section class="wh-split wh-split--context" aria-labelledby="time-about-title">
+          <h2 class="wh-split__title" id="time-about-title">О проекте</h2>
+          <p class="wh-split__text" style="--w:626px">Целью проекта было создание лонгрида, рассматривающего хронологию человеческого восприятия времени с точки зрения его практического применения. Основной идеей становится то, что время хотя и подразумевается как линейный и стабильный объект, на самом деле является очень пластичным и непостоянным, и в жесткие рамки четкости оно было загнано ради удобства в применении. Чтобы отразить это в дизайне была использована динамичная типографика, которая большую часть времени предстает четкой и ровной, однако иногда буквы искажаются.</p>
+        </section>
+
+        <div class="time-shots">
+          <div class="time-pair">
+            <div class="time-mini">
+              <div class="time-mini__browser">
+                <div class="time-mini__shot time-mini__shot--a">
+                  <img src="assets/time-shot-1.jpg" width="1600" height="1000" alt="Экран «7≠10»" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+            <div class="time-mini">
+              <div class="time-mini__browser">
+                <div class="time-mini__shot time-mini__shot--b">
+                  <img src="assets/time-shot-2.jpg" width="1600" height="967" alt="Экран «Часов и минут, и без этого же как-то раньше обходились»" loading="lazy" decoding="async">
+                </div>
+                <div class="time-mini__shot time-mini__shot--c">
+                  <img src="assets/time-shot-2.jpg" alt="" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="time-screen">
+            <div class="time-browser">
+              <video src="assets/time-motion.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Анимация лонгрида о времени"></video>
+            </div>
+          </div>
+
+          <div class="time-pair">
+            <div class="time-mini">
+              <div class="time-mini__browser">
+                <div class="time-mini__shot time-mini__shot--d">
+                  <img src="assets/time-shot-3.jpg" width="1600" height="1000" alt="Экран «То нам кажется, что прошло всего несколько минут, а не час»" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+            <div class="time-mini">
+              <div class="time-mini__browser">
+                <div class="time-mini__shot time-mini__shot--e">
+                  <img src="assets/time-shot-4.jpg" width="1600" height="967" alt="Экран со схемой прошлого и будущего" loading="lazy" decoding="async">
+                </div>
+                <div class="time-mini__shot time-mini__shot--f">
+                  <img src="assets/time-shot-4.jpg" alt="" loading="lazy" decoding="async">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <figure class="time-mac">
+            <img src="assets/time-mac.jpg" width="2800" height="1867" alt="Макбук с экраном лонгрида «12» на деревянном столе" loading="lazy" decoding="async">
+          </figure>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer" id="contacts">
+    <div class="footer__inner">
+      <div class="footer__info">
+        <p>Ира Танага, продуктовый дизайнер</p>
+        <p class="footer__muted">Санкт-Петербург, 2026</p>
+      </div>
+      <address class="footer__contacts">
+        <p>tg: <a href="https://t.me/irinka_tanaga" target="_blank" rel="noopener">@irinka_tanaga</a></p>
+        <p>почта: <a href="mailto:irtanaga@gmail.com">irtanaga@gmail.com</a></p>
+        <p>тел.: <a href="tel:+79882552475">+7 988-255-24-75</a></p>
+      </address>
+    </div>
+  </footer>
+
+  <script>
+    // In-file pages. "#2gis", "#warehouse", "#decode" and "#brusnitsyn" open case studies; any other hash
+    // is the home page ("#about", "#projects", "#contacts" scroll to that section).
+    (function () {
+      var pages = document.querySelectorAll('[data-page]');
+      var homeLink = document.querySelector('.nav .pill[href="#"]');
+      var baseTitle = document.title;
+      var current = null;
+      var homeScroll = 0;
+      var toTop = false;
+
+      // Links to "#" (logo, "Главная") always open home at the top.
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[href="#"]');
+        if (a) toTop = true;
+      });
+
+      function route() {
+        var id = decodeURIComponent(location.hash.slice(1));
+        var pagesByHash = { '2gis': '2gis', warehouse: 'warehouse', decode: 'decode', brusnitsyn: 'brusnitsyn', tbiz: 'tbiz', time: 'time' };
+        var page = pagesByHash[id] || 'home';
+
+        if (current === 'home' && page !== 'home') homeScroll = window.scrollY;
+
+        pages.forEach(function (p) { p.hidden = p.dataset.page !== page; });
+        if (homeLink) {
+          if (page === 'home') homeLink.setAttribute('aria-current', 'page');
+          else homeLink.removeAttribute('aria-current');
+        }
+        var pageTitles = {
+          '2gis': 'Концепции ИИ-ассистента для 2ГИС — ',
+          warehouse: 'Дизайн страницы списания материалов — ',
+          decode: 'Decode — приложение для изучения языков программирования — ',
+          brusnitsyn: 'Дизайн сайта для выставки «Брусницын» — ',
+          tbiz: 'Дизайн презентация для Т-Бизнеса — ',
+          time: 'Дизайн сайта, посвященному изучению феномена времени — '
+        };
+        document.title = pageTitles[page] ? pageTitles[page] + baseTitle : baseTitle;
+
+        var target = page === 'home' && id ? document.getElementById(id) : null;
+        if (target) {
+          target.scrollIntoView();
+        } else if (page === 'home' && current && current !== 'home' && !toTop) {
+          window.scrollTo(0, homeScroll);      // "Back" returns to the card
+        } else if (current !== null || page !== 'home') {
+          window.scrollTo(0, 0);
+        }
+
+        current = page;
+        toTop = false;
+      }
+
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      window.addEventListener('hashchange', route);
+      route();
+    })();
+
+    // Mobile burger menu: toggles the dropdown, closes on link click,
+    // outside click, Escape, or when the window grows back to desktop width.
+    (function () {
+      var header = document.querySelector('.header');
+      var burger = header && header.querySelector('.burger');
+      if (!burger) return;
+
+      function setOpen(open) {
+        header.classList.toggle('is-open', open);
+        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+      }
+
+      burger.addEventListener('click', function () {
+        setOpen(!header.classList.contains('is-open'));
+      });
+      header.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('a')) setOpen(false);
+      });
+      document.addEventListener('click', function (e) {
+        if (!header.contains(e.target)) setOpen(false);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setOpen(false);
+      });
+      window.addEventListener('resize', function () {
+        if (window.innerWidth > 900) setOpen(false);
+      });
+    })();
+  </script>
+</body>
+</html>
